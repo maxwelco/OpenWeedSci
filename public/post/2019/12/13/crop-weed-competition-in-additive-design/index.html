@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>Crop-Weed Competition in Additive Design | Welcome to Open Weed Science</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <link href="//cdn.bootcss.com/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+
+  </head>
+
+  <body class="page">
+    <nav class="header">
+      <div class="banner">
+<a href="/">
+
+<img src="/banner/logo3.png" alt="alternative text on image" />
+</a>
+</div>
+
+      <div class="head-meta">
+      
+        <span><a href="/">&larr; Back to Home</a></span>
+        <span class="date">2019-12-13</span>
+        
+        
+        
+          
+        
+        
+        
+        <span><a href="https://github.com/openweedsci/OpenWeedScience/edit/master/content/post/2019-12-15-additivedesign.Rmd">Edit this page &rarr;</a></span>
+        
+        
+      
+      </div>
+    </nav>
+
+<div class="container">
+<article>
+<div class="article-meta">
+
+  <div class="categories">
+  
+    <a href="/categories/data-analysis">Data Analysis</a>
+  
+  </div>
+
+  <h1><span class="title">Crop-Weed Competition in Additive Design</span></h1>
+
+  
+  <h3 class="author">Maxwel C Oliveira, Rodrigo Werle
+</h3>
+  
+
+  
+  <p>Tags: <a href="/tags/weed-competition">weed competition</a>; <a href="/tags/plot">plot</a>; <a href="/tags/regression">regression</a>
+  </p>
+  
+  
+
+</div>
+
+
+
+<main>
+
+
+
+<div id="background" class="section level1">
+<h1>Background</h1>
+<p>Crop–weed competition is extensively studied in weed science. The additive design, in which weed density varies and the crop density is kept constant, is the most commonly utilized design in plant competition studies. The additive design is important to calculate economic weed thresholds and improve weed control decision-making.</p>
+</div>
+<div id="getting-started" class="section level1">
+<h1>Getting started</h1>
+<ul>
+<li>Download <strong>R</strong> for your laptop system/desktop from: <a href="https://www.r-project.org" class="uri">https://www.r-project.org</a></li>
+</ul>
+<p><strong>R</strong> is a programming language and free software environment for statistical computing and graphics supported by the R Foundation for Statistical Computing.</p>
+<ul>
+<li>Download <strong>RStudio</strong> for your laptop system/desktop from: <a href="https://rstudio.com" class="uri">https://rstudio.com</a></li>
+</ul>
+<p><strong>RStudio</strong> is an integrated development environment for R, a programming language for statistical computing and graphics.</p>
+</div>
+<div id="create-a-new-r-project-file" class="section level1">
+<h1>Create a new R project file</h1>
+<ul>
+<li>Click in File -&gt; New project… -&gt; New directory -&gt; New Project -&gt; Save the R work directory anywhere you want in your laptop.</li>
+</ul>
+<p>The saved file will have an R project and you should copy and paste all your raw data (excel file) in the same work directory (folder).</p>
+<ul>
+<li>Click in File -&gt; New File -&gt; R script (.R)</li>
+</ul>
+<p>or</p>
+<ul>
+<li>Click in File -&gt; New File -&gt; R markdown… (.Rmd)</li>
+</ul>
+<p>Although I like working within R markdown, R script is easier to work with in R studio.</p>
+</div>
+<div id="install-packages" class="section level1">
+<h1>Install packages</h1>
+<p>In order to accomplish this exercise, you will need to install the following R packages:</p>
+<pre><code>install.packages(nlstools)
+install.packages(AICcmodavg)
+install.packages(broom)
+install.packages(&quot;tidyverse&quot;)
+install.packages(&quot;RCurl&quot;)
+</code></pre>
+<p>Run all codes below by clicking in the Run option in the top right corner of you R script or R markdown. These codes will install the necessary packages for analyzing the weed competition experiment. Once you install these packages you will not need to install them every time you work in Rstudio, unless you update R or Rstudio.</p>
+</div>
+<div id="data" class="section level1">
+<h1>Data</h1>
+<ul>
+<li>Run the packages below</li>
+</ul>
+<pre class="yaml"><code>library(tidyverse)
+library(RCurl)</code></pre>
+<p>The data used for the exercise is from a published <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/wre.12317">manuscript</a> of <em>Commelina benghalensis</em> and <em>Richardia brasiliensis</em> competition in corn.</p>
+<p>Run the following codes below to load the data into R:</p>
+<pre class="r"><code>df_path &lt;- getURL(&quot;https://raw.githubusercontent.com/openweedsci/data/master/posts/additive.csv&quot;)
+
+DMT &lt;- read_csv(df_path) </code></pre>
+<p>After running the codes above, the data should appear as <em>DMT</em> (“DMT” was chosen as the name of the dataset; you could have called it “data” or something else). In the spreadsheet, weeds are named 1 (<em>C. benghalensis</em>) and 2 (<em>R. brasiliensis</em>), and desity of weeds varies from 0 to 4 plants per plot, and response variable is yl (% yield loss).</p>
+<pre class="r"><code>DMT</code></pre>
+<pre><code>## # A tibble: 40 x 7
+##    block treat densitycrop densityweed biomass     yl  weed
+##    &lt;dbl&gt; &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
+##  1     1     1           1           0   59.4  -16.4      1
+##  2     2     1           1           0   34.4   32.7      1
+##  3     3     1           1           0   56.7  -11        1
+##  4     4     1           1           0   53.8   -5.28     1
+##  5     1     2           1           1   12.7   75.1      1
+##  6     2     2           1           1   14.0   72.7      1
+##  7     3     2           1           1   12.4   75.7      1
+##  8     4     2           1           1   23.2   54.6      1
+##  9     1     3           1           2    4.55  91.1      1
+## 10     2     3           1           2    3.91  92.3      1
+## # … with 30 more rows</code></pre>
+</div>
+<div id="rectangular-hyperbola-model" class="section level1">
+<h1>Rectangular hyperbola model</h1>
+<p>The empirical model: <span class="math display">\[Y=\frac{I * x}{ 1 + (\frac{I}{A})*x}\]</span> is the standard model to describe additive competition studies. <span class="math inline">\(I\)</span> represents the slope of <span class="math inline">\(Y\)</span> (yield loss) when <span class="math inline">\(x\)</span> (weed density) approximate zero. Also, <span class="math inline">\(A\)</span> is the asymptote or maximum expected yield loss (%).</p>
+<div id="step-1-fit-a-full-model-a-rectangular-hyperbola-with-4-parameters" class="section level2">
+<h2>Step 1) Fit a full model, a rectangular hyperbola with 4 parameters</h2>
+<p><strong>Full</strong> is a user-defined name that will contain all information about the fitted model generated by <em>nls</em> (nonlinear least squares) function. The <em>start</em> is used to estimate values of parameter <span class="math inline">\(I\)</span> and <span class="math inline">\(A\)</span> for the model. Parameters can determine from visual inspection of the data set (plotting data and observing trends). The brackets [weed] for each parameter in the equation tell <strong>R</strong> to estimate a parameter for each weed species (4 parameters).</p>
+<blockquote>
+<p>nls function</p>
+</blockquote>
+<pre><code>Full = nls(yl ~ (I[weed]*densityweed)/(1+(I[weed]/A[weed])*densityweed), data=DMT,
+           start=list(I=c(60,30), A=c(80,60)), trace=T)</code></pre>
+<div id="check-estimated-parameters" class="section level3">
+<h3>Check estimated parameters</h3>
+<p>The <em>summary</em> command provides the estimated parameters <span class="math inline">\(I\)</span> and <span class="math inline">\(A\)</span> for each weed species, <em>Commelina benghalensis</em> (species 1) and <em>Richardia brasiliensis</em> (species 2).</p>
+<pre class="r"><code>summary(Full)</code></pre>
+<pre><code>## 
+## Formula: yl ~ (I[weed] * densityweed)/(1 + (I[weed]/A[weed]) * densityweed)
+## 
+## Parameters:
+##    Estimate Std. Error t value Pr(&gt;|t|)    
+## I1   210.23      88.55   2.374  0.02304 *  
+## I2    50.25      22.64   2.220  0.03280 *  
+## A1   108.56      11.15   9.740 1.25e-11 ***
+## A2    82.07      23.06   3.559  0.00107 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 14 on 36 degrees of freedom
+## 
+## Number of iterations to convergence: 4 
+## Achieved convergence tolerance: 3.438e-06</code></pre>
+</div>
+</div>
+<div id="step-2-fit-a-reduced-model-red.1-rectangular-hyperbola-model-with-2-parameters." class="section level2">
+<h2>Step 2) Fit a reduced model (Red.1), rectangular hyperbola model with 2 parameters.</h2>
+<p><strong>Red.1</strong> is a user-defined name that will contain information about the first reduced model generated by the <em>nls</em> function. Notice that we do not include bracket [weed] after each parameter <span class="math inline">\(I\)</span> and <span class="math inline">\(A\)</span>. In this case, we are combining parameter <span class="math inline">\(I\)</span> and <span class="math inline">\(A\)</span> for both weed species. We hypothesize that a single parameter <span class="math inline">\(I\)</span> and <span class="math inline">\(A\)</span> for both species is enough to describe the crop-weed relationship (e.g., no difference of <span class="math inline">\(I\)</span> and <span class="math inline">\(A\)</span> between species).</p>
+<pre><code>Red.1 = nls(yl ~ (I*densityweed)/(1+(I/A)*densityweed), data=DMT, 
+start=list(I=40, A=80), trace=T)</code></pre>
+<div id="check-estimated-parameters-1" class="section level3">
+<h3>Check estimated parameters</h3>
+<p>This command provides the estimated parameters <span class="math inline">\(I\)</span> and <span class="math inline">\(A\)</span> for both weed species combined.</p>
+<pre class="r"><code>summary(Red.1)</code></pre>
+<pre><code>## 
+## Formula: yl ~ (I * densityweed)/(1 + (I/A) * densityweed)
+## 
+## Parameters:
+##   Estimate Std. Error t value Pr(&gt;|t|)    
+## I   114.55      55.93   2.048   0.0475 *  
+## A    92.62      15.93   5.814 1.02e-06 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 22.78 on 38 degrees of freedom
+## 
+## Number of iterations to convergence: 4 
+## Achieved convergence tolerance: 7.759e-07</code></pre>
+</div>
+<div id="test-the-first-hypothesis" class="section level3">
+<h3>Test the first hypothesis</h3>
+<p>Hypothesis testing using <em>ANOVA</em>. We test this hypothesis using the <strong>Full</strong> model (<span class="math inline">\(I\)</span> and <span class="math inline">\(A\)</span> for each species) to compare with <strong>Red.1</strong> (single <span class="math inline">\(I\)</span> and <span class="math inline">\(A\)</span> for both species). If P-value&gt;0.05, models are similar; therefore we should use the <strong>Red.1</strong> model, which means that the simplest model (<strong>Red.1</strong>) is appropriate to describe crop-weed relationship. If not we should proceed to the next hypothesis.</p>
+<blockquote>
+<p>anova function</p>
+</blockquote>
+<pre class="r"><code>anova(Full, Red.1)</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: yl ~ (I[weed] * densityweed)/(1 + (I[weed]/A[weed]) * densityweed)
+## Model 2: yl ~ (I * densityweed)/(1 + (I/A) * densityweed)
+##   Res.Df Res.Sum Sq Df Sum Sq F value    Pr(&gt;F)    
+## 1     36     7056.7                                
+## 2     38    19715.8 -2 -12659   32.29 9.293e-09 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>The F-test showed P&lt;0.05. Therefore the Red.1 model is not appropriate to describe the crop-weed relationship.</p>
+</div>
+</div>
+<div id="step-3-fit-a-reduced-model-red.2-rectangular-hyperbola-model-with-3-parameters" class="section level2">
+<h2>Step 3) Fit a reduced model (Red.2), rectangular hyperbola model with 3 parameters</h2>
+<p><strong>Red.2</strong> is a user-defined name that will contain information about the second reduced model generated by the <em>nls</em> function. Notice that the bracket [weed] is after the parameter <span class="math inline">\(A\)</span> only, which means that we are testing a hypothesis of single parameter <span class="math inline">\(I\)</span>, but different <span class="math inline">\(A\)</span> for the species.</p>
+<pre><code>Red.2 = nls(yl ~ (I*densityweed)/(1+(I/A[weed])*densityweed), data=DMT, 
+            start=list(I=60, A=c(80,60)),  trace=T)</code></pre>
+<div id="check-estimated-parameters-2" class="section level3">
+<h3>Check estimated parameters</h3>
+<p>This command provides the estimated parameters <span class="math inline">\(I\)</span> for both weed species and <span class="math inline">\(A\)</span> for each weed species.</p>
+<pre class="r"><code>summary(Red.2)</code></pre>
+<pre><code>## 
+## Formula: yl ~ (I * densityweed)/(1 + (I/A[weed]) * densityweed)
+## 
+## Parameters:
+##    Estimate Std. Error t value Pr(&gt;|t|)    
+## I   163.850     56.984   2.875  0.00666 ** 
+## A1  115.285     12.779   9.021 7.03e-11 ***
+## A2   56.077      5.714   9.813 7.65e-12 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 14.58 on 37 degrees of freedom
+## 
+## Number of iterations to convergence: 6 
+## Achieved convergence tolerance: 5.504e-06</code></pre>
+</div>
+<div id="test-a-second-hypothesis" class="section level3">
+<h3>Test a second hypothesis</h3>
+<p>Hypothesis testing using F-test. We are using the Full model (separated I and <span class="math inline">\(A\)</span> for each species) to compare with Red.2 (single <span class="math inline">\(I\)</span> and different <span class="math inline">\(A\)</span> for both species). If P-value&gt;0.05, models are similar; therefore, we should use the <strong>Red.2</strong> model, which means that the simplest model (<strong>Red.2</strong>) is appropriate to describe crop-weed relationship. If not we should proceed to the next hypothesis.</p>
+<pre class="r"><code>anova(Full, Red.2)</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: yl ~ (I[weed] * densityweed)/(1 + (I[weed]/A[weed]) * densityweed)
+## Model 2: yl ~ (I * densityweed)/(1 + (I/A[weed]) * densityweed)
+##   Res.Df Res.Sum Sq Df  Sum Sq F value  Pr(&gt;F)  
+## 1     36     7056.7                             
+## 2     37     7864.6 -1 -807.88  4.1214 0.04978 *
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>The F-test showed P&lt;0.05. Therefore the Red.2 model is not appropriate to describe the crop-weed relationship.</p>
+</div>
+</div>
+<div id="step-4-fit-a-reduced-model-red.3-rectangular-hyperbola-model-with-3-parameters" class="section level2">
+<h2>Step 4) Fit a reduced model (Red.3), rectangular hyperbola model with 3 parameters</h2>
+<p>Red.3 is a user-defined name that will contain information about the third reduced model generated by the <em>nls</em> function. Notice that the bracket [weed] is after the parameter <span class="math inline">\(I\)</span> only, which means that we are testing a hypothesis of different parameter <span class="math inline">\(I\)</span>, but single parameter <span class="math inline">\(A\)</span> for the species.</p>
+<pre><code>Red.3 = nls(yl ~ (I[weed]*densityweed)/(1+(I[weed]/A)*densityweed), data=DMT,
+            start=list(I=c(30,30), A=70), trace=T)</code></pre>
+<div id="check-estimated-parameters-3" class="section level3">
+<h3>Check estimated parameters</h3>
+<p>This command provides the estimated parameters <span class="math inline">\(I\)</span> for each weed species and <span class="math inline">\(A\)</span> for both weed species.</p>
+<pre class="r"><code>summary(Red.3)</code></pre>
+<pre><code>## 
+## Formula: yl ~ (I[weed] * densityweed)/(1 + (I[weed]/A) * densityweed)
+## 
+## Parameters:
+##    Estimate Std. Error t value Pr(&gt;|t|)    
+## I1  228.357    100.178   2.280   0.0285 *  
+## I2   37.000      6.196   5.972 6.85e-07 ***
+## A   106.170     10.318  10.289 2.10e-12 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 13.95 on 37 degrees of freedom
+## 
+## Number of iterations to convergence: 7 
+## Achieved convergence tolerance: 1.144e-06</code></pre>
+</div>
+<div id="test-a-third-hypothesis" class="section level3">
+<h3>Test a third hypothesis</h3>
+<p>Hypothesis testing using F-test. We are using the Full model (separated <span class="math inline">\(I\)</span> and <span class="math inline">\(A\)</span> for each species) to compare with Red.3 (different <span class="math inline">\(I\)</span> and single <span class="math inline">\(A\)</span> for both species). If P-value&gt;0.05, models are similar; therefore we should use the <strong>Red.3</strong> model, which means that the simplest model (<strong>Red.3</strong>) is appropriate to describe the crop-weed relationship.</p>
+<pre class="r"><code>anova(Full, Red.3)</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: yl ~ (I[weed] * densityweed)/(1 + (I[weed]/A[weed]) * densityweed)
+## Model 2: yl ~ (I[weed] * densityweed)/(1 + (I[weed]/A) * densityweed)
+##   Res.Df Res.Sum Sq Df  Sum Sq F value Pr(&gt;F)
+## 1     36     7056.7                          
+## 2     37     7200.0 -1 -143.35  0.7313 0.3981</code></pre>
+<p>Results showed that P &gt;0.05. Therefore, the <strong>Full</strong> model can be simplified to <strong>Red.3</strong> model.</p>
+</div>
+</div>
+<div id="plotting-the-red.3-model" class="section level2">
+<h2>Plotting the Red.3 model</h2>
+<div id="rstudio-basic-figure" class="section level3">
+<h3><strong>Rstudio</strong> basic figure</h3>
+<p>The command <em>par</em> is used to define the plot size.
+The command <em>plot</em> and <em>lines</em> are used to generate the figure, and the averaged points of yield loss at each density (Fig. 5). The command <em>subset</em> is adding each weed species separately in the plot (weed 1) and lines (weed 2).</p>
+<p>The x is a user-defined name; it will contain the x-axis sequence of the data set. weed1 and weed2 is also a user-defined name, and this is the equation with the previous parameter estimates <span class="math inline">\(I\)</span> and <span class="math inline">\(A\)</span> estimated from Red.3 model using the nls function. Notice that the parameters estimated in Red.3 model were inserted in the rectangular hyperbola model for each weed species (Figure 1).</p>
+<p>The command <em>lines</em> will insert the previous equation into the plot. Command <em>lty</em>, <em>lwd</em>, and <em>col</em> define the line type, size, and color, respectively.</p>
+<p>The command <em>legend</em> will add the legend to the plot area.</p>
+<pre class="r"><code>par(mar=c(5,6,2,2), mgp=c(3,1.5,0))
+plot(yl~densityweed, data=DMT, subset = weed ==&quot;1&quot;, pch=16, cex=1, las=1, 
+     xlab=expression(&quot;Weed Density (plants pot&quot;^-1*&quot;)&quot;), ylim=c(-10,110), 
+     ylab = &quot;Yield Loss (%)&quot;, cex.axis=1, cex.lab=1)
+lines(yl~densityweed, type=&quot;p&quot;,data=DMT, subset = weed ==&quot;2&quot;, col=2, cex=1, pch=1)
+x=seq(0,4,0.25)
+weed1=(228.357*x)/(1+(228.357/106.170)*x)
+weed2=(37.000*x)/(1+(37.000/106.170)*x)
+lines(x,weed1, lty=1, lwd=1, col=1)
+lines(x,weed2, lty=3, lwd=1, col=2)
+legend(&quot;bottomright&quot;, legend=c(&quot;C. benghalensis&quot;, &quot;R. brasiliensis&quot;), text.font = 3, 
+       col=c(1,2), pch= c(16,1), lty=c(1,3), lwd= c(1,1), bty=&quot;n&quot;, cex=1)</code></pre>
+<p><img src="/post/2019-12-15-additivedesign_files/figure-html/plot-1.png" width="672" /></p>
+</div>
+<div id="high-quality-figure-in-rstudio" class="section level3">
+<h3>High-quality figure in <strong>Rstudio</strong></h3>
+<p>The package <em>ggplot2</em> (whithin tidyverse), an excellent package for producing high-quality figures in <strong>Rstudio</strong>.</p>
+<pre class="r"><code>DMT$weed&lt;-factor(DMT$weed, levels=c(&quot;1&quot;, &quot;2&quot;), 
+                 labels=c(&quot;Commelina benghalensis&quot;,
+                          &quot;Richardia brasiliensis&quot;))
+Red.3 = nls(yl ~ (I[weed]*densityweed)/(1+(I[weed]/A)*densityweed), data=DMT,
+                      start=list(I=c(30,30), A=70), trace=T)</code></pre>
+<pre><code>## 53764.77 :  30 30 70
+## 26821.46 :  128.12346  55.66148  65.14150
+## 13779.51 :  265.38910  15.43032 100.87497
+## 7506.945 :  205.09965  30.83279 107.29119
+## 7203.363 :  225.88449  36.30998 106.26798
+## 7200.048 :  228.19527  36.97054 106.19148
+## 7200.044 :  228.35524  36.99872 106.17039
+## 7200.044 :  228.35703  36.99971 106.16982</code></pre>
+<pre class="r"><code>summary(Red.3)</code></pre>
+<pre><code>## 
+## Formula: yl ~ (I[weed] * densityweed)/(1 + (I[weed]/A) * densityweed)
+## 
+## Parameters:
+##    Estimate Std. Error t value Pr(&gt;|t|)    
+## I1  228.357    100.178   2.280   0.0285 *  
+## I2   37.000      6.196   5.972 6.85e-07 ***
+## A   106.170     10.318  10.289 2.10e-12 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 13.95 on 37 degrees of freedom
+## 
+## Number of iterations to convergence: 7 
+## Achieved convergence tolerance: 1.144e-06</code></pre>
+<pre class="r"><code>nd1 = data.frame(densityweed=seq(0, 4, 0.01), weed=&quot;Commelina benghalensis&quot;)
+nd2 = data.frame(densityweed=seq(0, 4, 0.01), weed=&quot;Richardia brasiliensis&quot;)
+nd = rbind(nd1, nd2) %&gt;% 
+  mutate(weed = as.factor(weed)) 
+
+pred&lt;- augment(Red.3, newdata=nd)</code></pre>
+<pre class="r"><code>ggplot(DMT, aes(x=densityweed, y=yl, color=weed)) + geom_point(shape=1, size=3) + 
+  geom_line(data = pred, size=1.3, aes(x=densityweed, linetype=weed, y=.fitted)) +
+  labs(fill=&quot;&quot;, y=&quot;Yield loss (%)&quot;, 
+       x=expression(bold(paste(&quot;Weed density (plants pot&quot;^&quot;-2&quot;,&quot;)&quot;)))) +
+  scale_colour_manual(values = c(&quot;red&quot;, &quot;black&quot;))+
+  scale_y_continuous(limits=c(-25,110), breaks = c(-25,0,25,50,75,100)) +
+    theme(axis.text=element_text(size=15, color=&quot;black&quot;), 
+        axis.title=element_text(size=17,face=&quot;bold&quot;), 
+        panel.background = element_rect(fill=&quot;white&quot;, color = &quot;white&quot;), 
+        panel.grid.major = element_line(color = &quot;white&quot;), 
+  panel.grid.minor = element_blank(), 
+  panel.border = element_rect(fill=NA,color=&quot;black&quot;, size=0.5, 
+  linetype=&quot;solid&quot;), legend.position=c(0.7,0.15), 
+  legend.text = element_text(size = 12, colour = &quot;black&quot;, face=&quot;italic&quot;), 
+  legend.key = element_rect(fill=NA), legend.key.height  = unit(1.5, &quot;line&quot;),
+  legend.key.width = unit(2.2, &quot;line&quot;),
+legend.background = element_rect(fill =NA),  legend.title=element_blank())</code></pre>
+<p><img src="/post/2019-12-15-additivedesign_files/figure-html/Red%20model%20plot-1.png" width="672" style="display: block; margin: auto auto auto 0;" /></p>
+<p>Notice that the figure is created with Red.3 model (rectangular hyperbola model) using <em>ggplot2</em> package (Figure 2). This is the Fig. 5 published in the manuscript <strong>Additive design: the concept and data analysis</strong>.</p>
+</div>
+</div>
+<div id="aicc-model-selection-and-goodness-of-fit" class="section level2">
+<h2>AICc model selection and Goodness of fit</h2>
+<p>According to the AICc criterion, the top model has the lowest AICc value. The AICc calculation can be simplified using <strong>R</strong>, the first step is loading the package <em>AICcmodavg</em>.</p>
+<pre><code>library(broom)
+library(AICcmodavg)</code></pre>
+<p>The four candidate models using the rectangular hyperbola are compared using AICc.</p>
+<pre class="r"><code>cand.mods&lt;- list(Full, Red.1, Red.2, Red.3)
+ 
+Modnames&lt;- c(&#39;Full&#39;,&#39; Red.1&#39;,&#39; Red.2&#39;,&#39; Red.3&#39;)
+aictab(cand.set = cand.mods,modnames = Modnames, sort = TRUE)</code></pre>
+<pre><code>## 
+## Model selection based on AICc:
+## 
+##        K   AICc Delta_AICc AICcWt Cum.Wt      LL
+##  Red.3 4 330.38       0.00   0.64   0.64 -160.62
+## Full   5 332.19       1.82   0.26   0.89 -160.21
+##  Red.2 4 333.91       3.53   0.11   1.00 -162.38
+##  Red.1 3 368.19      37.82   0.00   1.00 -180.76</code></pre>
+<p>Root mean square error (RMSE) for goodness of fit of the top model (<strong>Red.3</strong>) selected.</p>
+<pre class="r"><code>mse &lt;- mean(residuals(Red.3)^2/df.residual(Red.3))
+rmse &lt;- sqrt(mse)
+rmse</code></pre>
+<pre><code>## [1] 2.205651</code></pre>
+</div>
+<div id="obtaining-the-confidence-internals-for-the-top-model-red.3" class="section level2">
+<h2>Obtaining the Confidence Internals for the Top model (Red.3)</h2>
+<p>It is needed the package <em>nlstools</em> and the command <em>confint2</em> to obtain the 95% confidence intervals for parameters <span class="math inline">\(I\)</span> and <span class="math inline">\(A\)</span> for the <strong>Red.3</strong>.</p>
+<pre class="r"><code>library(nlstools)
+confint2(Red.3, level=0.95)</code></pre>
+<pre><code>##       2.5 %    97.5 %
+## I1 25.37778 431.33628
+## I2 24.44635  49.55307
+## A  85.26278 127.07685</code></pre>
+</div>
+</div>
+<div id="extra---setting-a-limit-to-the-rectangular-hyperbola-parameters" class="section level1">
+<h1>Extra - Setting a limit to the rectangular hyperbola parameters</h1>
+<p>Here we demonstrate how to set an upper limit to parameter <span class="math inline">\(A\)</span> of <strong>Red.3</strong> model. Notice that we have to add <em>alg=“port”</em> and <em>upper</em> command to the function. The <em>upper</em> command has three numbers, the first two set a limit of 10000 to parameter <span class="math inline">\(I\)</span> of <em>R. brasiliensis</em> and <em>C. benghalensis</em>. The last <em>upper</em> number set a limit <span class="math inline">\(A\)</span>=100%, which will lock the upper limit to a biologically meaningful value.</p>
+<pre class="r"><code>Red.3_lim = nls(yl ~ (I[weed]*densityweed)/(1+(I[weed]/A)*densityweed), data=DMT, 
+                start=list(I=c(30,30), A=70), alg=&quot;port&quot;, 
+                upper=c(10000, 10000, 100), trace=T)</code></pre>
+<pre><code>##   0:     26882.386:  30.0000  30.0000  70.0000
+##   1:     18178.029:  42.8369  32.3788  84.6203
+##   2:     6263.6597:  102.843  37.2539  100.000
+##   3:     4270.9222:  165.478  39.1160  100.000
+##   4:     3745.8945:  228.173  39.3120  100.000
+##   5:     3641.7888:  285.567  39.3210  100.000
+##   6:     3640.0157:  296.138  39.3212  100.000
+##   7:     3640.0156:  296.037  39.3212  100.000
+##   8:     3640.0156:  296.041  39.3212  100.000</code></pre>
+<pre class="r"><code>summary(Red.3_lim)</code></pre>
+<pre><code>## 
+## Formula: yl ~ (I[weed] * densityweed)/(1 + (I[weed]/A) * densityweed)
+## 
+## Parameters:
+##    Estimate Std. Error t value Pr(&gt;|t|)    
+## I1  296.041    163.899   1.806    0.079 .  
+## I2   39.321      6.983   5.631 1.98e-06 ***
+## A   100.000      9.337  10.710 6.85e-13 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 14.03 on 37 degrees of freedom
+## 
+## Algorithm &quot;port&quot;, convergence message: relative convergence (4)</code></pre>
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<ul>
+<li><p>Fit the rectangular hyperbola model with <em>nls</em> (nonlinear least squares) function</p></li>
+<li><p>In the model, use brackets [weed] to generate parameters for each weed species</p></li>
+<li><p>Fit a Full and Reduced models and compare them with <em>anova</em> funcion</p></li>
+<li><p>Use RMSE to check the model goodness of fit</p></li>
+<li><p>Create a figure using <em>plot</em> or <em>ggplot</em> function</p></li>
+</ul>
+</div>
+
+</main>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="article-meta article-footer">
+  <h3>About the Author</h3>
+  
+    <p>Maxwel C Oliveira is currently a Professor of Weed Science/Data Analysis at <a href="https://www.unoeste.br">Western Sao Paulo University</a> and Researcher at <a href="https://www.wisc.edu">University of Wisconsin-Madison</a>. You can follow him on <a href="https://twitter.com/maxwelco">Twitter</a></p>
+  
+    <p>Rodrigo Werle is currently an Assistant Professor of Weed Science at the University of Wisconsin-Madison. You can find more information about him at <a href="https://wiscweeds.info">https://wiscweeds.info</a>.</p>
+  
+</section>
+
+
+
+
+
+
+<nav class="post-nav">
+  <span class="nav-prev"><a href="/post/2019/12/20/one-way-anova-for-percentage-weed-control-data/">&larr; One-Way ANOVA for Percentage Weed Control Data</a></span>
+  <span class="nav-next"><a href="/post/2019/12/11/using-rstudio-for-visualization-and-analysis-of-weed-science/">Using RStudio for Visualization and Analysis of Weed Science &rarr;</a></span>
+</nav>
+
+
+<div id="disqus_thread"></div>
+<script>
+(function() {
+var d = document, s = d.createElement('script');
+s.src = 'https://openweedsci.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</article>
+</div>
+
+<script async src="//yihui.name/js/center-img.js"></script>
+
+<footer>
+
+<div class="footer">
+  <ul class="menu">
+    
+    <li><a href="/"><span data-hover="Home">Home</span></a></li>
+    
+    <li><a href="/about/"><span data-hover="About">About</span></a></li>
+    
+    <li><a href="/contribute/"><span data-hover="Contribute">Contribute</span></a></li>
+    
+    <li><a href="/categories/"><span data-hover="Categories">Categories</span></a></li>
+    
+    <li><a href="/tags/"><span data-hover="Tags">Tags</span></a></li>
+    
+    <li><a href="/index.xml"><span data-hover="Subscribe">Subscribe</span></a></li>
+    
+  </ul>
+  
+  <div class="copyright">© <a href="https://openweedsci.org">Open Weed Science</a> 2020 | <a href="https://github.com/openweedsci">Github</a> | <a href="https://twitter.com/openweedsci">Twitter</a></div>
+  
+</div>
+</footer>
+
+
+<script src="//yihui.name/js/math-code.js"></script>
+<script async src="//mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+
+<script src="//cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.12.0/languages/r.min.js"></script>
+<script>
+hljs.configure({languages: []});
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-154732608-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+
+</body>
+</html>
+

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Welcome to Open Weed Science</title>
+    <link>/post/</link>
+    <description>Recent content in Posts on Welcome to Open Weed Science</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 18 Mar 2020 21:13:14 -0500</lastBuildDate>
+    
+	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>GWAS data visualization in R</title>
+      <link>/post/2020/03/18/gwas-data-visualization-in-r/</link>
+      <pubDate>Wed, 18 Mar 2020 21:13:14 -0500</pubDate>
+      
+      <guid>/post/2020/03/18/gwas-data-visualization-in-r/</guid>
+      <description>Introduction - What is GWAS? GWAS (Genome-wide association studies) is a common study when you want to check genetic variability in a genomic scale. GWAS will mainly focus on the association between single-nucleotide polymorthisms (SNPs) and traits such as herbicide resistance or some sort of disease. GWAS can be applied to any organisms and species where you want to study variation between different phenotype. GWAS studies investigate the entire genome, in contrast to methods that specifically test a small number of pre-specified genetic regions.</description>
+    </item>
+    
+    <item>
+      <title>2020 WSSA/WSWS Meeting Program Text Analysis</title>
+      <link>/post/2020/02/25/2020-wssa/wsws-meeting-program-text-analysis/</link>
+      <pubDate>Tue, 25 Feb 2020 21:13:14 -0500</pubDate>
+      
+      <guid>/post/2020/02/25/2020-wssa/wsws-meeting-program-text-analysis/</guid>
+      <description>Conference The 2020 Weed Science Society of America (WSSA) and Western Society of Weed Science (WSWS) joint meeting will be held on Mar 2-5 in Maui (http://wssa.net/meeting/2020-annual-meeting/), Hawaii. Unfortunately, some of us will not be present at the meeting but the data analysis discussed herein can help you learn the main Weed Science topics to be discussed in Hawaii.
+ Analysis The goal of this text analysis is to evaluate the frequency of words in the 2020 WSSA/WSWS oral and poster titles.</description>
+    </item>
+    
+    <item>
+      <title>Simulating Power</title>
+      <link>/post/2020/02/10/simulating-power/</link>
+      <pubDate>Mon, 10 Feb 2020 21:13:14 -0500</pubDate>
+      
+      <guid>/post/2020/02/10/simulating-power/</guid>
+      <description>Experimental power When we conduct hypothesis tests there are two kinds of error: \(\alpha\) (which we set, typically at \(5\%\)) and \(\beta\). \(\alpha\) is the probability of making a Type I error: rejecting a null or primary hypothesis when it was correct. \(\beta\) is the probability of making a Type II error: failing to reject the null or primary hypothesis when the alternative is correct.
+\(\beta\) can be tricky since we don’t set it directly.</description>
+    </item>
+    
+    <item>
+      <title>One-Way ANOVA for Percentage Weed Control Data</title>
+      <link>/post/2019/12/20/one-way-anova-for-percentage-weed-control-data/</link>
+      <pubDate>Fri, 20 Dec 2019 21:13:14 -0500</pubDate>
+      
+      <guid>/post/2019/12/20/one-way-anova-for-percentage-weed-control-data/</guid>
+      <description>Background Assessments of visual weed control in response to herbicide treatments is likely the most common experiment and data analysis conducted within the Weed Science discipline. The goal of these experiments is to investigate herbicides that promote the best level of control of targeted weed species. These experiments are usually organized in a one-way randomized complete block design with multiple treatments (herbicides). At a pre-established number of days after treatment (DAT; researcher choice), a percent (%) visual control rate is given to each targeted weed.</description>
+    </item>
+    
+    <item>
+      <title>Crop-Weed Competition in Additive Design</title>
+      <link>/post/2019/12/13/crop-weed-competition-in-additive-design/</link>
+      <pubDate>Fri, 13 Dec 2019 21:13:14 -0500</pubDate>
+      
+      <guid>/post/2019/12/13/crop-weed-competition-in-additive-design/</guid>
+      <description>Background Crop–weed competition is extensively studied in weed science. The additive design, in which weed density varies and the crop density is kept constant, is the most commonly utilized design in plant competition studies. The additive design is important to calculate economic weed thresholds and improve weed control decision-making.
+ Getting started  Download R for your laptop system/desktop from: https://www.r-project.org  R is a programming language and free software environment for statistical computing and graphics supported by the R Foundation for Statistical Computing.</description>
+    </item>
+    
+    <item>
+      <title>Using RStudio for Visualization and Analysis of Weed Science</title>
+      <link>/post/2019/12/11/using-rstudio-for-visualization-and-analysis-of-weed-science/</link>
+      <pubDate>Wed, 11 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/2019/12/11/using-rstudio-for-visualization-and-analysis-of-weed-science/</guid>
+      <description>Symposia A RStudio symposia was conducted at the 74th North Central Weed Science Society (NCWSS) Meeting in Columbus, OH on December 11, 2019. Thanks to Ethann Barnes for putting together the RStudio symposia and NCWSS committee members for accepting our proposal.
+Talks Title: Basics of R and RStudio
+Presenter: Dr. Ethann R. Barnes, University of Nebraska-Lincoln
+Title: Data wrangling with dplyr
+Presenter: Dr. Maxwel C. Oliveira, University of Wisconsin-Madison
+Title: An introduction to using R for weed population dynamics modeling</description>
+    </item>
+    
+  </channel>
+</rss>
