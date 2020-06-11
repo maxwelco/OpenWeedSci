@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on Welcome to Open Weed Science</title>
+    <link>/categories/</link>
+    <description>Recent content in Categories on Welcome to Open Weed Science</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 18 Mar 2020 21:13:14 -0500</lastBuildDate>
+    
+	<atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Bioinformatics</title>
+      <link>/categories/bioinformatics/</link>
+      <pubDate>Wed, 18 Mar 2020 21:13:14 -0500</pubDate>
+      
+      <guid>/categories/bioinformatics/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Text Analysis</title>
+      <link>/categories/text-analysis/</link>
+      <pubDate>Tue, 25 Feb 2020 21:13:14 -0500</pubDate>
+      
+      <guid>/categories/text-analysis/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Statistics</title>
+      <link>/categories/statistics/</link>
+      <pubDate>Mon, 10 Feb 2020 21:13:14 -0500</pubDate>
+      
+      <guid>/categories/statistics/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Data Analysis</title>
+      <link>/categories/data-analysis/</link>
+      <pubDate>Fri, 20 Dec 2019 21:13:14 -0500</pubDate>
+      
+      <guid>/categories/data-analysis/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Talks &amp; Workshops</title>
+      <link>/categories/talks-workshops/</link>
+      <pubDate>Wed, 11 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/talks-workshops/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
