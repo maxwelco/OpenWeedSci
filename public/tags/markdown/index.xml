@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Markdown on Welcome to Open Weed Science</title>
+    <link>/tags/markdown/</link>
+    <description>Recent content in Markdown on Welcome to Open Weed Science</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 11 Dec 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/markdown/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Using RStudio for Visualization and Analysis of Weed Science</title>
+      <link>/post/2019/12/11/using-rstudio-for-visualization-and-analysis-of-weed-science/</link>
+      <pubDate>Wed, 11 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/post/2019/12/11/using-rstudio-for-visualization-and-analysis-of-weed-science/</guid>
+      <description>Symposia A RStudio symposia was conducted at the 74th North Central Weed Science Society (NCWSS) Meeting in Columbus, OH on December 11, 2019. Thanks to Ethann Barnes for putting together the RStudio symposia and NCWSS committee members for accepting our proposal.
+Talks Title: Basics of R and RStudio
+Presenter: Dr. Ethann R. Barnes, University of Nebraska-Lincoln
+Title: Data wrangling with dplyr
+Presenter: Dr. Maxwel C. Oliveira, University of Wisconsin-Madison
+Title: An introduction to using R for weed population dynamics modeling</description>
+    </item>
+    
+  </channel>
+</rss>

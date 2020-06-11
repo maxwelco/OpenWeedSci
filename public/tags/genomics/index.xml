@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Genomics on Welcome to Open Weed Science</title>
+    <link>/tags/genomics/</link>
+    <description>Recent content in Genomics on Welcome to Open Weed Science</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 18 Mar 2020 21:13:14 -0500</lastBuildDate>
+    
+	<atom:link href="/tags/genomics/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>GWAS data visualization in R</title>
+      <link>/post/2020/03/18/gwas-data-visualization-in-r/</link>
+      <pubDate>Wed, 18 Mar 2020 21:13:14 -0500</pubDate>
+      
+      <guid>/post/2020/03/18/gwas-data-visualization-in-r/</guid>
+      <description>Introduction - What is GWAS? GWAS (Genome-wide association studies) is a common study when you want to check genetic variability in a genomic scale. GWAS will mainly focus on the association between single-nucleotide polymorthisms (SNPs) and traits such as herbicide resistance or some sort of disease. GWAS can be applied to any organisms and species where you want to study variation between different phenotype. GWAS studies investigate the entire genome, in contrast to methods that specifically test a small number of pre-specified genetic regions.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>regression on Welcome to Open Weed Science</title>
+    <link>/tags/regression/</link>
+    <description>Recent content in regression on Welcome to Open Weed Science</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 13 Dec 2019 21:13:14 -0500</lastBuildDate>
+    
+	<atom:link href="/tags/regression/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Crop-Weed Competition in Additive Design</title>
+      <link>/post/2019/12/13/crop-weed-competition-in-additive-design/</link>
+      <pubDate>Fri, 13 Dec 2019 21:13:14 -0500</pubDate>
+      
+      <guid>/post/2019/12/13/crop-weed-competition-in-additive-design/</guid>
+      <description>Background Crop–weed competition is extensively studied in weed science. The additive design, in which weed density varies and the crop density is kept constant, is the most commonly utilized design in plant competition studies. The additive design is important to calculate economic weed thresholds and improve weed control decision-making.
+ Getting started  Download R for your laptop system/desktop from: https://www.r-project.org  R is a programming language and free software environment for statistical computing and graphics supported by the R Foundation for Statistical Computing.</description>
+    </item>
+    
+  </channel>
+</rss>

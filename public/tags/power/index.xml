@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>power on Welcome to Open Weed Science</title>
+    <link>/tags/power/</link>
+    <description>Recent content in power on Welcome to Open Weed Science</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 10 Feb 2020 21:13:14 -0500</lastBuildDate>
+    
+	<atom:link href="/tags/power/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Simulating Power</title>
+      <link>/post/2020/02/10/simulating-power/</link>
+      <pubDate>Mon, 10 Feb 2020 21:13:14 -0500</pubDate>
+      
+      <guid>/post/2020/02/10/simulating-power/</guid>
+      <description>Experimental power When we conduct hypothesis tests there are two kinds of error: \(\alpha\) (which we set, typically at \(5\%\)) and \(\beta\). \(\alpha\) is the probability of making a Type I error: rejecting a null or primary hypothesis when it was correct. \(\beta\) is the probability of making a Type II error: failing to reject the null or primary hypothesis when the alternative is correct.
+\(\beta\) can be tricky since we don’t set it directly.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Welcome to Open Weed Science</title>
+    <link>/tags/</link>
+    <description>Recent content in Tags on Welcome to Open Weed Science</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 18 Mar 2020 21:13:14 -0500</lastBuildDate>
+    
+	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Genomics</title>
+      <link>/tags/genomics/</link>
+      <pubDate>Wed, 18 Mar 2020 21:13:14 -0500</pubDate>
+      
+      <guid>/tags/genomics/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>text mining</title>
+      <link>/tags/text-mining/</link>
+      <pubDate>Tue, 25 Feb 2020 21:13:14 -0500</pubDate>
+      
+      <guid>/tags/text-mining/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>word cloud</title>
+      <link>/tags/word-cloud/</link>
+      <pubDate>Tue, 25 Feb 2020 21:13:14 -0500</pubDate>
+      
+      <guid>/tags/word-cloud/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>power</title>
+      <link>/tags/power/</link>
+      <pubDate>Mon, 10 Feb 2020 21:13:14 -0500</pubDate>
+      
+      <guid>/tags/power/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>anova</title>
+      <link>/tags/anova/</link>
+      <pubDate>Fri, 20 Dec 2019 21:13:14 -0500</pubDate>
+      
+      <guid>/tags/anova/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>plot</title>
+      <link>/tags/plot/</link>
+      <pubDate>Fri, 20 Dec 2019 21:13:14 -0500</pubDate>
+      
+      <guid>/tags/plot/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>weed control</title>
+      <link>/tags/weed-control/</link>
+      <pubDate>Fri, 20 Dec 2019 21:13:14 -0500</pubDate>
+      
+      <guid>/tags/weed-control/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>regression</title>
+      <link>/tags/regression/</link>
+      <pubDate>Fri, 13 Dec 2019 21:13:14 -0500</pubDate>
+      
+      <guid>/tags/regression/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>weed competition</title>
+      <link>/tags/weed-competition/</link>
+      <pubDate>Fri, 13 Dec 2019 21:13:14 -0500</pubDate>
+      
+      <guid>/tags/weed-competition/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Markdown</title>
+      <link>/tags/markdown/</link>
+      <pubDate>Wed, 11 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/markdown/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>RStudio</title>
+      <link>/tags/rstudio/</link>
+      <pubDate>Wed, 11 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/rstudio/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Talk</title>
+      <link>/tags/talk/</link>
+      <pubDate>Wed, 11 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/talk/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

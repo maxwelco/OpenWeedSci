@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>weed control on Welcome to Open Weed Science</title>
+    <link>/tags/weed-control/</link>
+    <description>Recent content in weed control on Welcome to Open Weed Science</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 20 Dec 2019 21:13:14 -0500</lastBuildDate>
+    
+	<atom:link href="/tags/weed-control/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>One-Way ANOVA for Percentage Weed Control Data</title>
+      <link>/post/2019/12/20/one-way-anova-for-percentage-weed-control-data/</link>
+      <pubDate>Fri, 20 Dec 2019 21:13:14 -0500</pubDate>
+      
+      <guid>/post/2019/12/20/one-way-anova-for-percentage-weed-control-data/</guid>
+      <description>Background Assessments of visual weed control in response to herbicide treatments is likely the most common experiment and data analysis conducted within the Weed Science discipline. The goal of these experiments is to investigate herbicides that promote the best level of control of targeted weed species. These experiments are usually organized in a one-way randomized complete block design with multiple treatments (herbicides). At a pre-established number of days after treatment (DAT; researcher choice), a percent (%) visual control rate is given to each targeted weed.</description>
+    </item>
+    
+  </channel>
+</rss>
