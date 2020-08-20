@@ -6,22 +6,22 @@
     <description>Recent content in Data Analysis on Welcome to Open Weed Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 06 Aug 2020 21:13:14 -0500</lastBuildDate>
+    <lastBuildDate>Thu, 20 Aug 2020 21:13:14 -0500</lastBuildDate>
     
 	<atom:link href="/categories/data-analysis/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Random forest: a machine learning algorithm for weed research</title>
-      <link>/post/2020/08/06/random-forest-a-machine-learning-algorithm-for-weed-research/</link>
-      <pubDate>Thu, 06 Aug 2020 21:13:14 -0500</pubDate>
+      <link>/post/2020/08/20/random-forest-a-machine-learning-algorithm-for-weed-research/</link>
+      <pubDate>Thu, 20 Aug 2020 21:13:14 -0500</pubDate>
       
-      <guid>/post/2020/08/06/random-forest-a-machine-learning-algorithm-for-weed-research/</guid>
+      <guid>/post/2020/08/20/random-forest-a-machine-learning-algorithm-for-weed-research/</guid>
       <description>Background Random Forest is a machine learning algorithm that generates multiple decision trees using a subsample of bootstrapped observations from randomly selected explanatory variables. Random Forest is a useful tool for variable selection in large and complex datasets for quantitative, discrete, and qualitative variables and has been utilized for response variables such as Amaranthus spp. resistance (Vieira et al. 2018 and Oliveira et al. 2020), weed biomass in cover crops (Baraibar et al.</description>
     </item>
     
     <item>
-      <title>One-Way ANOVA for Percentage Weed Control Data</title>
+      <title>One-way ANOVA for percentage weed control data</title>
       <link>/post/2019/12/20/one-way-anova-for-percentage-weed-control-data/</link>
       <pubDate>Fri, 20 Dec 2019 21:13:14 -0500</pubDate>
       
