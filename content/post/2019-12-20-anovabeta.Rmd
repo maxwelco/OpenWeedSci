@@ -1,5 +1,5 @@
 ---
-title: "One-Way ANOVA for Percentage Weed Control Data"
+title: "One-way ANOVA for percentage weed control data"
 author: 
 - Maxwel C Oliveira
 - Rodrigo Werle
