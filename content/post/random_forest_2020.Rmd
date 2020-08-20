@@ -1,7 +1,7 @@
 ---
 title: "Random forest: a machine learning algorithm for weed research"
 author: "Sarah Striegel" 
-date: 2020-08-06T21:13:14-05:00
+date: 2020-08-20T21:13:14-05:00
 categories: ["Data Analysis"]
 tags: ["random forest", "variable importance"]
 output: html_document
@@ -24,7 +24,7 @@ library(RCurl)
 ```
 
 ## Background
-Random Forest is a machine learning algorithm that generates multiple decision trees using a subsample of bootstrapped observations from randomly selected explanatory variables. Random Forest is a useful tool for variable selection in large and complex datasets for quantitative, discrete, and qualitative variables and has been utilized for response variables such as *Amaranthus* spp. resistance ([Vieira et al. 2018]( https://doi.org/10.1002/ps.4781) and [Oliveira et al. 2020](https://doi.org/10.1017/wet.2020.74)), weed biomass in cover crops ([Baraibar et al. 2018](https://link.springer.com/article/10.1007/s13593-018-0543-1)), soybean yield (Smidt et al. 2016), soybean injury from dicamba ([Zhang et al. 2019](https://doi.org/10.1002/ps.5448)), and Goss’s bacterial wilt and leaf blight development ([Langemeier et al. 2017](https://doi.org/10.1094/PDIS-01-15-0038-RE)). 
+Random Forest is a machine learning algorithm that generates multiple decision trees using a subsample of bootstrapped observations from randomly selected explanatory variables. Random Forest is a useful tool for variable selection in large and complex datasets for quantitative, discrete, and qualitative variables and has been utilized for response variables such as *Amaranthus* spp. resistance ([Vieira et al. 2018]( https://doi.org/10.1002/ps.4781) and [Oliveira et al. 2020](https://doi.org/10.1017/wet.2020.74)), weed biomass in cover crops ([Baraibar et al. 2018](https://link.springer.com/article/10.1007/s13593-018-0543-1)), soybean yield ([Smidt et al. 2016]( https://doi.org/10.2134/agronj2015.0222)), soybean injury from dicamba ([Zhang et al. 2019](https://doi.org/10.1002/ps.5448)), and Goss’s bacterial wilt and leaf blight development ([Langemeier et al. 2017](https://doi.org/10.1094/PDIS-01-15-0038-RE)). 
 
 ## Getting started
 
@@ -105,7 +105,7 @@ s1_test <- testing(s1_split)
 
 In order to build our Random Forest, we will first build a recipe, then our model, and finally a workflow using both of these.  
 
-In the recipe below, we are specifying that "ph" is our response variable, and we are including all other columns in the dataset as explanatory variables. In random forest you can also manipulate your dataset by making [dummy variables](https://en.wikipedia.org/wiki/Dummy_variable_(statistics). 
+In the recipe below, we are specifying that "ph" is our response variable, and we are including all other columns in the dataset as explanatory variables. In random forest you can also manipulate your dataset by making [dummy variables](https://en.wikipedia.org/wiki/Dummy_variable_(statistics)). 
 
 In tidymodels, there are three hyperparameters for Random Forests: mtry, the number of different predictors sampled at each split; trees, the number of decision trees; and min_n, the minimum number of data points in a node required for further splits. If you are not familiar with these, look at rand_forest in Help tab for clarification on what the parameters represent. Often these parameters are arbitrarily assigned. For example, we are going to set the number of trees to 1000 (trees=1000), because for our purposes it is only important to have "enough." In the example below, we are specifying that we would like to tune our model for the optimal values of mtry and min_n.  
 
