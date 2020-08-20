@@ -3,12 +3,47 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>/categories/bioinformatics/</loc>
-    <lastmod>2020-03-18T21:13:14-05:00</lastmod>
+    <loc>/categories/</loc>
+    <lastmod>2020-08-06T21:13:14-05:00</lastmod>
   </url>
   
   <url>
-    <loc>/categories/</loc>
+    <loc>/categories/data-analysis/</loc>
+    <lastmod>2020-08-06T21:13:14-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/</loc>
+    <lastmod>2020-08-06T21:13:14-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/random-forest/</loc>
+    <lastmod>2020-08-06T21:13:14-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/2020/08/06/random-forest-a-machine-learning-algorithm-for-weed-research/</loc>
+    <lastmod>2020-08-06T21:13:14-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/</loc>
+    <lastmod>2020-08-06T21:13:14-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/variable-importance/</loc>
+    <lastmod>2020-08-06T21:13:14-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/</loc>
+    <lastmod>2020-08-06T21:13:14-05:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/categories/bioinformatics/</loc>
     <lastmod>2020-03-18T21:13:14-05:00</lastmod>
   </url>
   
@@ -19,21 +54,6 @@
   
   <url>
     <loc>/post/2020/03/18/gwas-data-visualization-in-r/</loc>
-    <lastmod>2020-03-18T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/</loc>
-    <lastmod>2020-03-18T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/</loc>
-    <lastmod>2020-03-18T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/</loc>
     <lastmod>2020-03-18T21:13:14-05:00</lastmod>
   </url>
   
@@ -74,11 +94,6 @@
   
   <url>
     <loc>/tags/anova/</loc>
-    <lastmod>2019-12-20T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/categories/data-analysis/</loc>
     <lastmod>2019-12-20T21:13:14-05:00</lastmod>
   </url>
   

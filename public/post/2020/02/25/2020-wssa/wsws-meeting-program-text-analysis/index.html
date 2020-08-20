@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <title>2020 WSSA/WSWS Meeting Program Text Analysis | Welcome to Open Weed Science</title>
+    <title>2020 WSSA/WSWS meeting program text analysis | Welcome to Open Weed Science</title>
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/fonts.css" />
     <link href="//cdn.bootcss.com/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -48,7 +48,7 @@
   
   </div>
 
-  <h1><span class="title">2020 WSSA/WSWS Meeting Program Text Analysis</span></h1>
+  <h1><span class="title">2020 WSSA/WSWS meeting program text analysis</span></h1>
 
   
   <h3 class="author">Maxwel C Oliveira, Sarah M Matos Marinho, Rodrigo Werle
@@ -192,13 +192,13 @@ authors_tokens &lt;- authorsdm %&gt;%
 <h3>New created vector</h3>
 <p>A new vector is named <em>titles_tokens_clean</em>.</p>
 <pre class="r"><code>head(titles_tokens_clean, n = 6)</code></pre>
-<pre><code>##       words
-## 1   program
-## 2 afternoon
-## 3     march
-## 4   general
-## 5   session
-## 6  location</code></pre>
+<pre><code>##         words
+## 1     program
+## 2.1 afternoon
+## 2.2     march
+## 3     general
+## 3.1   session
+## 4    location</code></pre>
 <p>A issue that we found is some authors have a number after their last names below the titles. For example Lindquist1, Yearka2, Tenhumberg1, Jhala1, and Werle3, numbers are given to identify their respective institutions.</p>
 <p><img src="/files/wssa/werle.png" /></p>
 <p>A solution for this problem is to create a data frame with authors’s last names with numbers from 1 to 12. To accomplish this task, we need the <em>loop</em> function again. This is the third <em>loop</em> in this text analysis; by the end of this exercise you will become an expert in using the <em>loop</em> function :)</p>
@@ -219,17 +219,17 @@ rm_authors$words &lt;- as.character(rm_authors$words)</code></pre>
 <p>Similarly, we run the <em>anti_join</em> funtion again to remove the last names with numbers for our main data frame, now named <em>titles_clean_clean</em>.</p>
 <pre class="r"><code>titles_clean_clean &lt;- anti_join(titles_tokens_clean, rm_authors, by = &quot;words&quot;)</code></pre>
 <pre class="r"><code>head(titles_clean_clean, n=10)</code></pre>
-<pre><code>##        words
-## 1    program
-## 2  afternoon
-## 3      march
-## 4    general
-## 5    session
-## 6   location
-## 7   monarchy
-## 8       time
-## 9         04
-## 10        00</code></pre>
+<pre><code>##         words
+## 1     program
+## 2.1 afternoon
+## 2.2     march
+## 3     general
+## 3.1   session
+## 4    location
+## 4.1  monarchy
+## 5        time
+## 5.1        04
+## 5.2        00</code></pre>
 </div>
 </div>
 <div id="stop-words" class="section level2">
@@ -445,7 +445,7 @@ wordcloud(words = title_dt$word, freq = title_dt$freq, min.freq=2, scale=c(5,.1)
 
 <nav class="post-nav">
   <span class="nav-prev"><a href="/post/2020/03/18/gwas-data-visualization-in-r/">&larr; GWAS data visualization in R</a></span>
-  <span class="nav-next"><a href="/post/2020/02/10/simulating-power/">Simulating Power &rarr;</a></span>
+  <span class="nav-next"><a href="/post/2020/02/10/simulating-power/">Simulating power &rarr;</a></span>
 </nav>
 
 

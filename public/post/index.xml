@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Welcome to Open Weed Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 18 Mar 2020 21:13:14 -0500</lastBuildDate>
+    <lastBuildDate>Thu, 06 Aug 2020 21:13:14 -0500</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Random forest: a machine learning algorithm for weed research</title>
+      <link>/post/2020/08/06/random-forest-a-machine-learning-algorithm-for-weed-research/</link>
+      <pubDate>Thu, 06 Aug 2020 21:13:14 -0500</pubDate>
+      
+      <guid>/post/2020/08/06/random-forest-a-machine-learning-algorithm-for-weed-research/</guid>
+      <description>Background Random Forest is a machine learning algorithm that generates multiple decision trees using a subsample of bootstrapped observations from randomly selected explanatory variables. Random Forest is a useful tool for variable selection in large and complex datasets for quantitative, discrete, and qualitative variables and has been utilized for response variables such as Amaranthus spp. resistance (Vieira et al. 2018 and Oliveira et al. 2020), weed biomass in cover crops (Baraibar et al.</description>
+    </item>
     
     <item>
       <title>GWAS data visualization in R</title>
@@ -21,7 +30,7 @@
     </item>
     
     <item>
-      <title>2020 WSSA/WSWS Meeting Program Text Analysis</title>
+      <title>2020 WSSA/WSWS meeting program text analysis</title>
       <link>/post/2020/02/25/2020-wssa/wsws-meeting-program-text-analysis/</link>
       <pubDate>Tue, 25 Feb 2020 21:13:14 -0500</pubDate>
       
@@ -31,7 +40,7 @@
     </item>
     
     <item>
-      <title>Simulating Power</title>
+      <title>Simulating power</title>
       <link>/post/2020/02/10/simulating-power/</link>
       <pubDate>Mon, 10 Feb 2020 21:13:14 -0500</pubDate>
       
@@ -50,7 +59,7 @@
     </item>
     
     <item>
-      <title>Crop-Weed Competition in Additive Design</title>
+      <title>Crop-weed competition in additive design</title>
       <link>/post/2019/12/13/crop-weed-competition-in-additive-design/</link>
       <pubDate>Fri, 13 Dec 2019 21:13:14 -0500</pubDate>
       
@@ -60,7 +69,7 @@
     </item>
     
     <item>
-      <title>Using RStudio for Visualization and Analysis of Weed Science</title>
+      <title>Using RStudio for visualization and analysis of weed science</title>
       <link>/post/2019/12/11/using-rstudio-for-visualization-and-analysis-of-weed-science/</link>
       <pubDate>Wed, 11 Dec 2019 00:00:00 +0000</pubDate>
       

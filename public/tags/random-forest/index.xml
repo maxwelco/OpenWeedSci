@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>random forest on Welcome to Open Weed Science</title>
+    <link>/tags/random-forest/</link>
+    <description>Recent content in random forest on Welcome to Open Weed Science</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 06 Aug 2020 21:13:14 -0500</lastBuildDate>
+    
+	<atom:link href="/tags/random-forest/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Random forest: a machine learning algorithm for weed research</title>
+      <link>/post/2020/08/06/random-forest-a-machine-learning-algorithm-for-weed-research/</link>
+      <pubDate>Thu, 06 Aug 2020 21:13:14 -0500</pubDate>
+      
+      <guid>/post/2020/08/06/random-forest-a-machine-learning-algorithm-for-weed-research/</guid>
+      <description>Background Random Forest is a machine learning algorithm that generates multiple decision trees using a subsample of bootstrapped observations from randomly selected explanatory variables. Random Forest is a useful tool for variable selection in large and complex datasets for quantitative, discrete, and qualitative variables and has been utilized for response variables such as Amaranthus spp. resistance (Vieira et al. 2018 and Oliveira et al. 2020), weed biomass in cover crops (Baraibar et al.</description>
+    </item>
+    
+  </channel>
+</rss>
