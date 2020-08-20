@@ -5,8 +5,7 @@ date: 2020-08-20T21:13:14-05:00
 categories: ["Data Analysis"]
 tags: ["random forest", "variable importance"]
 output: html_document
-
----
+--- 
 
 ```{r include=FALSE}
 library(parsnip)
@@ -90,7 +89,7 @@ After running the codes above, the data should appear as *data* (you could have 
 data
 ```
 
-The dataset contains solution pH levels for treatments that were a combination of 3 factors: 2 rates (1x and 4x), did/did not include glyphosate, did/did not include a pH buffer.  
+The dataset contains solution pH levels for treatments that were a combination of 3 factors: 2 rates (1x and 4x), did/did not include glyphosate, did/did not include AMS.  
 
 First, we must split the data into training and testing datasets. We will use the training set to build and tune the model; we will use the testing set at the very end to evaluate the performance of the model. When splitting the dataset, specify the response variable for the strata ("ph").  
 
@@ -112,6 +111,7 @@ In tidymodels, there are three hyperparameters for Random Forests: mtry, the num
 When building your model, there are several options to list for set_mode, depending on your data's response variable. For this example, our response variable specified is quantitative; thus, we specified the mode as "regression." "Classification" is a frequently used alternative for qualitative response variables. You can also change the engine specified (in this example we used "ranger").  
 
 ```{r}
+set.seed(123)
 #Build recipe
 s1_rec <- recipe(ph ~ ., data=s1_train)
 
@@ -129,11 +129,11 @@ tune_wf <- workflow() %>%
 Now that we have set up our workflow, we are almost ready to tune our hyperparameters. Below we use the vfold_cv function to allow our training dataset to randomly permute the explantory variables. We also use a parallel processor to tune faster. This is perhaps more important for very large datasets. We specified grid=20 when tuning so it would test 20 combinations of mtry and min_n. The larger the grid value, the longer this code will take to run.  
  
 ```{r}
-set.seed(234)
+set.seed(123)
 s1_folds <- vfold_cv(s1_train)
 
 doParallel::registerDoParallel() 
-set.seed(345)
+
 tune_res <- tune_grid(tune_wf, resamples=s1_folds, grid=20) 
 ```
 
@@ -144,9 +144,10 @@ First, we use the select_best function to select for the optimal values of mtry 
 Second, we use the next several lines to contstruct a plot to visualize what range of values of mtry and min_n are better for our selection criterion specified. BY looking at this plot, we can decide on a range of values to use for mtry and min_n to better tune the model. Think: is my model better if I have larger or smaller values of mtry?  
 
 ```{r}
+set.seed(123)
 tune_res %>%
   select_best("rmse") 
-
+set.seed(123)
 tune_res %>%
   collect_metrics() %>% 
   filter(.metric =="rmse") %>% 
@@ -156,12 +157,13 @@ tune_res %>%
   facet_wrap(~ parameter)
 ```
 
-The select_best function tells us that mtry=3 and min_n=5 provide the lowest values of RMSE. Our plot suggests lower values of min_n and mtry are better. We will be using this information to better tune our model by building a new sampling grid based off of what range of values we would like to test for the two parameters. The smaller the range we specify, the more precise we can be with specifying the optimal value for the parameters. Below, we specify we would like to test mtry values from 2-5 and min_n values from 0-5.We also choose to list levels=5. This can be adjusted similarly to as above when we specified grid=20. The larger the value listed for levels, more combinations tested and the longer the code will take to run.  
+The select_best function tells us that mtry=3 and min_n=4 provide the lowest values of RMSE. Our plot suggests lower values of min_n and mtry are better. We will be using this information to better tune our model by building a new sampling grid based off of what range of values we would like to test for the two parameters. The smaller the range we specify, the more precise we can be with specifying the optimal value for the parameters. Below, we specify we would like to test mtry values from 1-5 and min_n values from 15-30. We also choose to list levels=5. This can be adjusted similarly to as above when we specified grid=20. The larger the value listed for levels, more combinations tested and the longer the code will take to run.  
 
 ```{r Second model tune}
-rf_grid <- grid_regular(mtry(range=c(2,5)), min_n(range=c(0,5)), levels=5)  
+set.seed(123)
+rf_grid <- grid_regular(mtry(range=c(1,5)), min_n(range=c(20,30)), levels=5)  
 
-set.seed(456)
+set.seed(123)
 regular_res <- tune_grid(tune_wf, resamples=s1_folds, grid=rf_grid) 
 
 regular_res %>%
@@ -175,7 +177,7 @@ regular_res %>%
   geom_point()
 ```
 
-Similar to as we had above, we can use select_best function and the plot we construct to determine the best values of mtry and min_n for our model. Select_best tells us that mtry=3 and min_n=1 are optimal.  
+Similar to as we had above, we can use select_best function and the plot we construct to determine the best values of mtry and min_n for our model. Select_best tells us that mtry=3 and min_n=27 are optimal.  
 
 This time, the plot we construct shows RMSE on the y-axis, values of mtry on the x-axis, and min_n values tested are shown in different colored lines to display the combinations of mtry and min_n parameters and their relationship with RMSE criterion. From this plot, it is clear to see the levels of parameters specified when we ran the select_best function for this tuning do provide the lowest RMSE.  
 
@@ -189,8 +191,9 @@ We chose to utilize the "impurity" measure of importance, but there are several 
 Below we describe three ways to obtain/visualize the variable importance values. First, we can extract the importance values estimated by the model using the vi() function (shown hashtagged). Next, we create a dot plot - this is perhaps the most common display of importance in the literature. Finally, we create a bar plot displaying the same information in the dot plot.  
 
 ```{r}
-best_rmse <- select_best(regular_res, "rmse")
+set.seed(123)
 
+best_rmse <- select_best(regular_res, "rmse")
 final_rf <- finalize_model(tune_spec, best_rmse)
 
 final_rf %>%

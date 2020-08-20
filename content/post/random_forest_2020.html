@@ -5,8 +5,7 @@ date: 2020-08-20T21:13:14-05:00
 categories: ["Data Analysis"]
 tags: ["random forest", "variable importance"]
 output: html_document
-
----
+--- 
 
 
 
@@ -79,7 +78,7 @@ data &lt;- read_csv(df_path) %&gt;%
 ##  9  4.93 4x    no    yes       
 ## 10  4.93 4x    no    yes       
 ## # … with 110 more rows</code></pre>
-<p>The dataset contains solution pH levels for treatments that were a combination of 3 factors: 2 rates (1x and 4x), did/did not include glyphosate, did/did not include a pH buffer.</p>
+<p>The dataset contains solution pH levels for treatments that were a combination of 3 factors: 2 rates (1x and 4x), did/did not include glyphosate, did/did not include AMS.</p>
 <p>First, we must split the data into training and testing datasets. We will use the training set to build and tune the model; we will use the testing set at the very end to evaluate the performance of the model. When splitting the dataset, specify the response variable for the strata (“ph”).</p>
 <pre class="r"><code>set.seed(123)
 s1_split &lt;- initial_split(data, strata = ph)
@@ -92,7 +91,8 @@ s1_test &lt;- testing(s1_split)</code></pre>
 <p>In the recipe below, we are specifying that “ph” is our response variable, and we are including all other columns in the dataset as explanatory variables. In random forest you can also manipulate your dataset by making <a href="https://en.wikipedia.org/wiki/Dummy_variable_(statistics)">dummy variables</a>.</p>
 <p>In tidymodels, there are three hyperparameters for Random Forests: mtry, the number of different predictors sampled at each split; trees, the number of decision trees; and min_n, the minimum number of data points in a node required for further splits. If you are not familiar with these, look at rand_forest in Help tab for clarification on what the parameters represent. Often these parameters are arbitrarily assigned. For example, we are going to set the number of trees to 1000 (trees=1000), because for our purposes it is only important to have “enough.” In the example below, we are specifying that we would like to tune our model for the optimal values of mtry and min_n. </p>
 <p>When building your model, there are several options to list for set_mode, depending on your data’s response variable. For this example, our response variable specified is quantitative; thus, we specified the mode as “regression.” “Classification” is a frequently used alternative for qualitative response variables. You can also change the engine specified (in this example we used “ranger”).</p>
-<pre class="r"><code>#Build recipe
+<pre class="r"><code>set.seed(123)
+#Build recipe
 s1_rec &lt;- recipe(ph ~ ., data=s1_train)
 
 #Build model
@@ -105,23 +105,25 @@ tune_wf &lt;- workflow() %&gt;%
   add_recipe(s1_rec) %&gt;% 
   add_model(tune_spec) </code></pre>
 <p>Now that we have set up our workflow, we are almost ready to tune our hyperparameters. Below we use the vfold_cv function to allow our training dataset to randomly permute the explantory variables. We also use a parallel processor to tune faster. This is perhaps more important for very large datasets. We specified grid=20 when tuning so it would test 20 combinations of mtry and min_n. The larger the grid value, the longer this code will take to run.</p>
-<pre class="r"><code>set.seed(234)
+<pre class="r"><code>set.seed(123)
 s1_folds &lt;- vfold_cv(s1_train)
 
 doParallel::registerDoParallel() 
-set.seed(345)
+
 tune_res &lt;- tune_grid(tune_wf, resamples=s1_folds, grid=20) </code></pre>
 <pre><code>## i Creating pre-processing data to finalize unknown parameter: mtry</code></pre>
 <p>Once the previous chunk has finished running, we can view the results a few different ways.</p>
 <p>First, we use the select_best function to select for the optimal values of mtry and min_n given based off our specified criterion, Root Mean Squared Error (RMSE), for the model based on this initial tune. You can change what criterion to select by based on the type of random forest or your personal preference (i.e. I also could have chosen R<sup>2</sup>). RMSE is estimated as the square root of the average difference between the observed and the predicted value squared for all observations (Zhou et al. 2019). Lower RMSE scores indicate better model performance (Zhou et al. 2019). Alternatively, we could have used collect_metrics() to view the results for the entire sampling grid.</p>
 <p>Second, we use the next several lines to contstruct a plot to visualize what range of values of mtry and min_n are better for our selection criterion specified. BY looking at this plot, we can decide on a range of values to use for mtry and min_n to better tune the model. Think: is my model better if I have larger or smaller values of mtry?</p>
-<pre class="r"><code>tune_res %&gt;%
+<pre class="r"><code>set.seed(123)
+tune_res %&gt;%
   select_best(&quot;rmse&quot;) </code></pre>
 <pre><code>## # A tibble: 1 x 3
 ##    mtry min_n .config
 ##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;  
-## 1     3    24 Model15</code></pre>
-<pre class="r"><code>tune_res %&gt;%
+## 1     3     4 Model11</code></pre>
+<pre class="r"><code>set.seed(123)
+tune_res %&gt;%
   collect_metrics() %&gt;% 
   filter(.metric ==&quot;rmse&quot;) %&gt;% 
   pivot_longer(min_n:mtry, values_to=&quot;value&quot;, names_to=&quot;parameter&quot;) %&gt;% 
@@ -129,10 +131,11 @@ tune_res &lt;- tune_grid(tune_wf, resamples=s1_folds, grid=20) </code></pre>
   geom_point(show.legend=FALSE) +
   facet_wrap(~ parameter)</code></pre>
 <p><img src="/post/random_forest_2020_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<p>The select_best function tells us that mtry=3 and min_n=5 provide the lowest values of RMSE. Our plot suggests lower values of min_n and mtry are better. We will be using this information to better tune our model by building a new sampling grid based off of what range of values we would like to test for the two parameters. The smaller the range we specify, the more precise we can be with specifying the optimal value for the parameters. Below, we specify we would like to test mtry values from 2-5 and min_n values from 0-5.We also choose to list levels=5. This can be adjusted similarly to as above when we specified grid=20. The larger the value listed for levels, more combinations tested and the longer the code will take to run.</p>
-<pre class="r"><code>rf_grid &lt;- grid_regular(mtry(range=c(2,5)), min_n(range=c(0,5)), levels=5)  
+<p>The select_best function tells us that mtry=3 and min_n=4 provide the lowest values of RMSE. Our plot suggests lower values of min_n and mtry are better. We will be using this information to better tune our model by building a new sampling grid based off of what range of values we would like to test for the two parameters. The smaller the range we specify, the more precise we can be with specifying the optimal value for the parameters. Below, we specify we would like to test mtry values from 1-5 and min_n values from 15-30. We also choose to list levels=5. This can be adjusted similarly to as above when we specified grid=20. The larger the value listed for levels, more combinations tested and the longer the code will take to run.</p>
+<pre class="r"><code>set.seed(123)
+rf_grid &lt;- grid_regular(mtry(range=c(1,5)), min_n(range=c(20,30)), levels=5)  
 
-set.seed(456)
+set.seed(123)
 regular_res &lt;- tune_grid(tune_wf, resamples=s1_folds, grid=rf_grid) 
 
 regular_res %&gt;%
@@ -140,7 +143,7 @@ regular_res %&gt;%
 <pre><code>## # A tibble: 1 x 3
 ##    mtry min_n .config
 ##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;  
-## 1     2     5 Model17</code></pre>
+## 1     3    27 Model18</code></pre>
 <pre class="r"><code>regular_res %&gt;%
   collect_metrics() %&gt;%
   filter(.metric ==&quot;rmse&quot;) %&gt;% 
@@ -149,7 +152,7 @@ regular_res %&gt;%
   geom_line(alpha=0.5, size=1.5) +
   geom_point()</code></pre>
 <p><img src="/post/random_forest_2020_files/figure-html/Second%20model%20tune-1.png" width="672" /></p>
-<p>Similar to as we had above, we can use select_best function and the plot we construct to determine the best values of mtry and min_n for our model. Select_best tells us that mtry=3 and min_n=1 are optimal.</p>
+<p>Similar to as we had above, we can use select_best function and the plot we construct to determine the best values of mtry and min_n for our model. Select_best tells us that mtry=3 and min_n=27 are optimal.</p>
 <p>This time, the plot we construct shows RMSE on the y-axis, values of mtry on the x-axis, and min_n values tested are shown in different colored lines to display the combinations of mtry and min_n parameters and their relationship with RMSE criterion. From this plot, it is clear to see the levels of parameters specified when we ran the select_best function for this tuning do provide the lowest RMSE.</p>
 </div>
 <div id="finalize-the-model" class="section level2">
@@ -157,8 +160,9 @@ regular_res %&gt;%
 <p>Below we select our model based on our specified criterion, RMSE, and final our model by editing the intial model we had built, tune_spec. Now we have our final model, final_rf.</p>
 <p>We chose to utilize the “impurity” measure of importance, but there are several different measures you could list instead. Consult the “ranger” package or the package for the engine selected (if changing) to determine the correct measure to list for your dataset. Variable importance scores provide an estimate of the change in prediction accuracy should the variable be excluded from the model (Wright 2020). Higher VI values indicate the variable is important in the model and in explaining variability of the response variable, while values near zero indicate the variable is not important (Bourgoin et al. 2018; Louppe et al. 2013).</p>
 <p>Below we describe three ways to obtain/visualize the variable importance values. First, we can extract the importance values estimated by the model using the vi() function (shown hashtagged). Next, we create a dot plot - this is perhaps the most common display of importance in the literature. Finally, we create a bar plot displaying the same information in the dot plot.</p>
-<pre class="r"><code>best_rmse &lt;- select_best(regular_res, &quot;rmse&quot;)
+<pre class="r"><code>set.seed(123)
 
+best_rmse &lt;- select_best(regular_res, &quot;rmse&quot;)
 final_rf &lt;- finalize_model(tune_spec, best_rmse)
 
 final_rf %&gt;%
@@ -216,8 +220,8 @@ final_res %&gt;%
 <pre><code>## # A tibble: 2 x 3
 ##   .metric .estimator .estimate
 ##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
-## 1 rmse    standard       0.335
-## 2 rsq     standard       0.823</code></pre>
+## 1 rmse    standard       0.322
+## 2 rsq     standard       0.838</code></pre>
 <pre class="r"><code>final_res %&gt;%
   collect_predictions() %&gt;% 
   bind_cols(s1_test)</code></pre>
@@ -227,16 +231,16 @@ final_res %&gt;%
 <pre><code>## # A tibble: 28 x 8
 ##    id               .pred  .row ph...4 ph...5 Rate  AMS   Glyphosate
 ##    &lt;chr&gt;            &lt;dbl&gt; &lt;int&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;fct&gt; &lt;fct&gt; &lt;fct&gt;     
-##  1 train/test split  6.51     3   6.56   6.56 4x    no    no        
-##  2 train/test split  5.20     9   4.93   4.93 4x    no    yes       
-##  3 train/test split  5.20    16   4.96   4.96 4x    no    yes       
-##  4 train/test split  6.51    23   6.5    6.5  4x    no    no        
-##  5 train/test split  6.51    24   6.53   6.53 4x    no    no        
-##  6 train/test split  6.36    25   6.73   6.73 4x    yes   no        
-##  7 train/test split  6.36    28   6.8    6.8  4x    yes   no        
-##  8 train/test split  6.36    30   6.77   6.77 4x    yes   no        
-##  9 train/test split  5.29    32   5.03   5.03 4x    yes   yes       
-## 10 train/test split  5.29    37   5.04   5.04 4x    yes   yes       
+##  1 train/test split  6.45     3   6.56   6.56 4x    no    no        
+##  2 train/test split  5.19     9   4.93   4.93 4x    no    yes       
+##  3 train/test split  5.19    16   4.96   4.96 4x    no    yes       
+##  4 train/test split  6.45    23   6.5    6.5  4x    no    no        
+##  5 train/test split  6.45    24   6.53   6.53 4x    no    no        
+##  6 train/test split  6.45    25   6.73   6.73 4x    yes   no        
+##  7 train/test split  6.45    28   6.8    6.8  4x    yes   no        
+##  8 train/test split  6.45    30   6.77   6.77 4x    yes   no        
+##  9 train/test split  5.26    32   5.03   5.03 4x    yes   yes       
+## 10 train/test split  5.26    37   5.04   5.04 4x    yes   yes       
 ## # … with 18 more rows</code></pre>
 </div>
 <div id="references" class="section level2">
