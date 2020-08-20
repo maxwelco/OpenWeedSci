@@ -66,6 +66,7 @@
 
 
 <main>
+ 
 
 
 
@@ -179,7 +180,7 @@ tune_res &lt;- tune_grid(tune_wf, resamples=s1_folds, grid=20) </code></pre>
 <pre><code>## # A tibble: 1 x 3
 ##    mtry min_n .config
 ##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;  
-## 1     3    24 Model15</code></pre>
+## 1     3    12 Model20</code></pre>
 <pre class="r"><code>tune_res %&gt;%
   collect_metrics() %&gt;% 
   filter(.metric ==&quot;rmse&quot;) %&gt;% 
@@ -199,7 +200,7 @@ regular_res %&gt;%
 <pre><code>## # A tibble: 1 x 3
 ##    mtry min_n .config
 ##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;  
-## 1     2     5 Model17</code></pre>
+## 1     2     0 Model01</code></pre>
 <pre class="r"><code>regular_res %&gt;%
   collect_metrics() %&gt;%
   filter(.metric ==&quot;rmse&quot;) %&gt;% 
