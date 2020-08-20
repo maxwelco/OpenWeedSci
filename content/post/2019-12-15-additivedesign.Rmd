@@ -1,5 +1,5 @@
 ---
-title: "Crop-Weed Competition in Additive Design"
+title: "Crop-weed competition in additive design"
 author: 
 - Maxwel C Oliveira
 - Rodrigo Werle

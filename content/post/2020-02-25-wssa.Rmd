@@ -1,5 +1,5 @@
 ---
-title: "2020 WSSA/WSWS Meeting Program Text Analysis"
+title: "2020 WSSA/WSWS meeting program text analysis"
 author: 
 - Maxwel C Oliveira
 - Sarah M Matos Marinho

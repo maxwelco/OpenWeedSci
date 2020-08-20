@@ -1,6 +1,6 @@
 ---
 title: "GWAS data visualization in R"
-author: 
+author:  
 - Lucas Kopecky Bobadilla
 date: 2020-03-18T21:13:14-05:00
 categories: ["Bioinformatics"]
@@ -65,7 +65,7 @@ Click here to download the data: https://drive.google.com/file/d/1OPbKktDUN4izxh
 
 ```{r load data, message=FALSE, warning=FALSE}
 # load data
-plink.result <- read_table2("/Users/maxwelco/Box Sync/Website/static/analysis1.assoc.logistic") # change to your root directory
+plink.result <- read_table2("/Users/maxwelco/Documents/OpenWeedSci/static/analysis1.assoc.logistic") # change to your root directory
 
 head(plink.result) # get first 5 lines
 glimpse(plink.result) # check data stucture

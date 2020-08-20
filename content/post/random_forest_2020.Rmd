@@ -1,0 +1,277 @@
+---
+title: "Random forest: a machine learning algorithm for weed research"
+author: "Sarah Striegel" 
+date: 2020-08-06T21:13:14-05:00
+categories: ["Data Analysis"]
+tags: ["random forest", "variable importance"]
+output: html_document
+
+---
+
+```{r include=FALSE}
+library(parsnip)
+library(tidymodels)
+library(vctrs)
+library(hardhat)
+library(tidyverse)
+library(ggplot2)
+library(RColorBrewer)
+library(tidyr)
+library(doParallel)
+library(ranger)
+library(vip)
+library(RCurl)
+```
+
+## Background
+Random Forest is a machine learning algorithm that generates multiple decision trees using a subsample of bootstrapped observations from randomly selected explanatory variables. Random Forest is a useful tool for variable selection in large and complex datasets for quantitative, discrete, and qualitative variables and has been utilized for response variables such as *Amaranthus* spp. resistance ([Vieira et al. 2018]( https://doi.org/10.1002/ps.4781) and [Oliveira et al. 2020](https://doi.org/10.1017/wet.2020.74)), weed biomass in cover crops ([Baraibar et al. 2018](https://link.springer.com/article/10.1007/s13593-018-0543-1)), soybean yield (Smidt et al. 2016), soybean injury from dicamba ([Zhang et al. 2019](https://doi.org/10.1002/ps.5448)), and Goss’s bacterial wilt and leaf blight development ([Langemeier et al. 2017](https://doi.org/10.1094/PDIS-01-15-0038-RE)). 
+
+## Getting started
+
+- Download **R** for your laptop system/desktop from: https://www.r-project.org
+
+**R** is a programming language and free software environment for statistical computing and graphics supported by the R Foundation for Statistical Computing.
+
+- Download **RStudio** for your laptop system/desktop from: https://rstudio.com
+
+**RStudio** is an integrated development environment for R, a programming language for statistical computing and graphics.
+
+
+## Create a new R project file
+
+- Click in File -> New project... -> New directory -> New Project -> Save the R work directory anywhere you want in your laptop. 
+
+The saved file will have an R project and you should copy and paste all your raw data (excel file) in the same work directory (folder).
+
+- Click in File -> New File -> R script (.R)
+
+or
+
+- Click in File -> New File -> R markdown... (.Rmd)
+
+
+## Install packages
+
+In order to accomplish this exercise, you will need to install the following R packages:
+
+
+```
+library(parsnip)
+library(tidymodels)
+library(vctrs)
+library(hardhat)
+library(tidyverse)
+library(ggplot2)
+library(RColorBrewer)
+library(tidyr)
+library(doParallel)
+library(ranger)
+library(vip)
+library(RCurl)
+```
+
+Run all codes above by clicking in the "Run" option in the top right corner of you R script or R markdown. These codes will install the necessary packages. Once you install these packages you will not need to install them again, unless you update R and/or RStudio.  
+
+## Data  
+
+The data used for this exercise is from a published [manuscript](https://doi.org/10.1017/wet.2020.89) by Striegel et al. 2020 investigating the influence of spray additives on spray solution pH. Run the following codes to load the data into R: 
+
+```{r}
+df_path <- getURL("https://raw.githubusercontent.com/openweedsci/data/master/posts/randomforest2.csv")
+
+data <- read_csv(df_path) %>% 
+  mutate_if(is.character, as.factor)
+```
+
+
+After running the codes above, the data should appear as *data* (you could have called it something else).  
+
+```{r}
+data
+```
+
+The dataset contains solution pH levels for treatments that were a combination of 3 factors: 2 rates (1x and 4x), did/did not include glyphosate, did/did not include a pH buffer.  
+
+First, we must split the data into training and testing datasets. We will use the training set to build and tune the model; we will use the testing set at the very end to evaluate the performance of the model. When splitting the dataset, specify the response variable for the strata ("ph").  
+
+```{r}
+set.seed(123)
+s1_split <- initial_split(data, strata = ph)
+s1_train <- training(s1_split)
+s1_test <- testing(s1_split)
+```
+
+## Building our Model and Tuning Hyperparameters  
+
+In order to build our Random Forest, we will first build a recipe, then our model, and finally a workflow using both of these.  
+
+In the recipe below, we are specifying that "ph" is our response variable, and we are including all other columns in the dataset as explanatory variables. In random forest you can also manipulate your dataset by making [dummy variables](https://en.wikipedia.org/wiki/Dummy_variable_(statistics). 
+
+In tidymodels, there are three hyperparameters for Random Forests: mtry, the number of different predictors sampled at each split; trees, the number of decision trees; and min_n, the minimum number of data points in a node required for further splits. If you are not familiar with these, look at rand_forest in Help tab for clarification on what the parameters represent. Often these parameters are arbitrarily assigned. For example, we are going to set the number of trees to 1000 (trees=1000), because for our purposes it is only important to have "enough." In the example below, we are specifying that we would like to tune our model for the optimal values of mtry and min_n.  
+
+When building your model, there are several options to list for set_mode, depending on your data's response variable. For this example, our response variable specified is quantitative; thus, we specified the mode as "regression." "Classification" is a frequently used alternative for qualitative response variables. You can also change the engine specified (in this example we used "ranger").  
+
+```{r}
+#Build recipe
+s1_rec <- recipe(ph ~ ., data=s1_train)
+
+#Build model
+tune_spec <- rand_forest(mtry=tune(), trees=1000, min_n=tune()) %>% 
+  set_mode("regression") %>%
+  set_engine("ranger") 
+
+#Build your worflow
+tune_wf <- workflow() %>%
+  add_recipe(s1_rec) %>% 
+  add_model(tune_spec) 
+```
+
+Now that we have set up our workflow, we are almost ready to tune our hyperparameters. Below we use the vfold_cv function to allow our training dataset to randomly permute the explantory variables. We also use a parallel processor to tune faster. This is perhaps more important for very large datasets. We specified grid=20 when tuning so it would test 20 combinations of mtry and min_n. The larger the grid value, the longer this code will take to run.  
+ 
+```{r}
+set.seed(234)
+s1_folds <- vfold_cv(s1_train)
+
+doParallel::registerDoParallel() 
+set.seed(345)
+tune_res <- tune_grid(tune_wf, resamples=s1_folds, grid=20) 
+```
+
+Once the previous chunk has finished running, we can view the results a few different ways.  
+
+First, we use the select_best function to select for the optimal values of mtry and min_n given based off our specified criterion, Root Mean Squared Error (RMSE), for the model based on this initial tune. You can change what criterion to select by based on the type of random forest or your personal preference (i.e. I also could have chosen R^2^). RMSE is estimated as the square root of the average difference between the observed and the predicted value squared for all observations (Zhou et al. 2019). Lower RMSE scores indicate better model performance (Zhou et al. 2019). Alternatively, we could have used collect_metrics() to view the results for the entire sampling grid.  
+
+Second, we use the next several lines to contstruct a plot to visualize what range of values of mtry and min_n are better for our selection criterion specified. BY looking at this plot, we can decide on a range of values to use for mtry and min_n to better tune the model. Think: is my model better if I have larger or smaller values of mtry?  
+
+```{r}
+tune_res %>%
+  select_best("rmse") 
+
+tune_res %>%
+  collect_metrics() %>% 
+  filter(.metric =="rmse") %>% 
+  pivot_longer(min_n:mtry, values_to="value", names_to="parameter") %>% 
+  ggplot(aes(value, mean, color=parameter)) +
+  geom_point(show.legend=FALSE) +
+  facet_wrap(~ parameter)
+```
+
+The select_best function tells us that mtry=3 and min_n=5 provide the lowest values of RMSE. Our plot suggests lower values of min_n and mtry are better. We will be using this information to better tune our model by building a new sampling grid based off of what range of values we would like to test for the two parameters. The smaller the range we specify, the more precise we can be with specifying the optimal value for the parameters. Below, we specify we would like to test mtry values from 2-5 and min_n values from 0-5.We also choose to list levels=5. This can be adjusted similarly to as above when we specified grid=20. The larger the value listed for levels, more combinations tested and the longer the code will take to run.  
+
+```{r Second model tune}
+rf_grid <- grid_regular(mtry(range=c(2,5)), min_n(range=c(0,5)), levels=5)  
+
+set.seed(456)
+regular_res <- tune_grid(tune_wf, resamples=s1_folds, grid=rf_grid) 
+
+regular_res %>%
+  select_best("rmse") 
+regular_res %>%
+  collect_metrics() %>%
+  filter(.metric =="rmse") %>% 
+  mutate(min_n = factor(min_n)) %>% 
+  ggplot(aes(mtry, mean, color = min_n)) +
+  geom_line(alpha=0.5, size=1.5) +
+  geom_point()
+```
+
+Similar to as we had above, we can use select_best function and the plot we construct to determine the best values of mtry and min_n for our model. Select_best tells us that mtry=3 and min_n=1 are optimal.  
+
+This time, the plot we construct shows RMSE on the y-axis, values of mtry on the x-axis, and min_n values tested are shown in different colored lines to display the combinations of mtry and min_n parameters and their relationship with RMSE criterion. From this plot, it is clear to see the levels of parameters specified when we ran the select_best function for this tuning do provide the lowest RMSE.  
+
+
+## Finalize the Model  
+
+Below we select our model based on our specified criterion, RMSE, and final our model by editing the intial model we had built, tune_spec. Now we have our final model, final_rf.  
+
+We chose to utilize the "impurity" measure of importance, but there are several different measures you could list instead. Consult the "ranger" package or the package for the engine selected (if changing) to determine the correct measure to list for your dataset. Variable importance scores provide an estimate of the change in prediction accuracy should the variable be excluded from the model (Wright 2020). Higher VI values indicate the variable is important in the model and in explaining variability of the response variable, while values near zero indicate the variable is not important (Bourgoin et al. 2018; Louppe et al. 2013).   
+
+Below we describe three ways to obtain/visualize the variable importance values. First, we can extract the importance values estimated by the model using the vi() function (shown hashtagged). Next, we create a dot plot - this is perhaps the most common display of importance in the literature. Finally, we create a bar plot displaying the same information in the dot plot.  
+
+```{r}
+best_rmse <- select_best(regular_res, "rmse")
+
+final_rf <- finalize_model(tune_spec, best_rmse)
+
+final_rf %>%
+  set_engine("ranger", importance="impurity") %>% 
+  fit(ph ~ ., data=s1_train) %>%
+  #vi() %>% 
+  #Dot plot
+  vip(geom="point", horizontal=TRUE, aesthetics=list(color="black", size=3)) + 
+  theme_light() + 
+  theme(plot.title = element_text(hjust=0.5, size=35, face="bold"),
+                     axis.title.x = element_text(size=20, color="black"), 
+                     legend.title = element_blank(),
+                     axis.text.x = element_text(size=15, color="black"),
+                     axis.text.y = element_text(size=15, hjust=0, color="black"),
+                     strip.text.x = element_text(size=25, color="black", face="bold"),
+                     strip.text = element_text(size=13), 
+                     panel.background =element_rect(fill="white"),
+                     panel.grid.major=element_line(color="white"),
+                     panel.grid.minor=element_line(color="white")) +
+  labs(y="Variable Importance") 
+
+final_rf %>%
+  set_engine("ranger", importance="impurity") %>%
+  fit(ph ~ ., data=s1_train) %>% 
+  #Bar plot
+  vip(geom="col", horizontal=TRUE, aesthetics=list(fill=c("#CB181D", "#EF3B2C","#FB6A4A"), 
+                                                   width= 0.65)) +
+  theme_light() + 
+  theme(plot.title = element_text(hjust=0.5, size=35, face="bold"),
+                     axis.title.x = element_text(size=20, color="black"), 
+                     legend.title = element_blank(),
+                     axis.text.x = element_text(size=15, color="black"),
+                     axis.text.y = element_text(size=15, hjust=0, color="black"),
+                     strip.text.x = element_text(size=25, color="black", face="bold"),
+                     strip.text = element_text(size=13), 
+                     panel.background =element_rect(fill="white"),
+                     panel.grid.major=element_line(color="white"),
+                     panel.grid.minor=element_line(color="white")) +
+  labs(y="Variable Importance")
+```
+
+## Test the Model  
+
+Now, let's say we want to test the model we built. Below we build a final workflow with our final model and fit it to our split dataset - which included both of our training and testing data. When we run collect_metrics, it provides our model selection criterion for the final model when fit to the training data and tested on our testing data.   
+
+Finally, when we run collect_predictions, we generate predicted values for our response variable when fit to training data and tested on testing data. This gives us a good idea of how well our model is predicting values based on the explanatory variables included in the model.  
+
+```{r}
+final_wf <- workflow() %>%
+  add_recipe(s1_rec) %>% 
+  add_model(final_rf) 
+
+final_res <- final_wf %>%
+  last_fit(s1_split)
+
+final_res %>%
+  collect_metrics() 
+
+final_res %>%
+  collect_predictions() %>% 
+  bind_cols(s1_test)
+```
+
+## References
+Baraibar B, Mortensen DA, Hunter MC, Barbercheck ME, Kaye JP, Finney DM, Curran WS, Bunchek J, White CM (2018) Growing degree days and cover crop type explain weed biomass in winter cover crops. Agron Sustain Dev 38:1–9
+
+Bourgoin C, Blanc L, Bailly J-S, Cornu G, Berenguer E, Oszwald J, Tritsch I, Laurent F, Hasan AF, Sist P, Gond V (2018) The potential of multisource remote sensing for mapping the biomass of a degraded Amazonian forest. Forests 9:1–21
+
+Langemeier CB, Robertson AE, Wang D, Jackson-Ziems TA, Kruger GR (2017) Factors affecting the development and severity of Goss’s bacterial wilt and leaf blight of corn, caused by *Clavibacter michiganensis* subsp. *nebraskensis*. Plant Dis 101:54–61
+
+Louppe G, Wehenkel L, Sutera A, Geurts P (2013) Understanding variable importances in forests of randomized trees. Pages 431–439 in 2013 Proceedings of Neural Information Processing Systems 26. Lake Tahoe, Nevada: Neural Information Processing Systems
+
+
+Oliveira MC, Giacomini DA, Arsenijevic N, Vieira G, Tranel PJ, Werle R (2020) Distribution and validation of genotypic and phenotypic glyphosate and PPO-inhibitor resistance in Palmer amaranth (*Amaranthus palmeri*) from southwestern Nebraska. Weed Technol. in press
+
+
+
+Smidt ER, Conley SP, Zhu J, Arriaga FJ (2016) Identifying field attributes that predict soybean yield using random forest analysis. Agron J 108:637–646
+
+Vieira BC, Samuelson SL, Alves GS, Gaines TA, Werle R, Kruger GR (2018) Distribution of glyphosate-resistant Amaranthus spp. in Nebraska. Pest Manag Sci 74:2316–2324
+
+Zhang J, Huang Y, Reddy KN, Wang B (2019) Assessing crop damage from dicamba on non-dicamba-tolerant soybean by hyperspectral imaging through machine learning. Pest Manag Sci 75:3260–3272
+
+Zhou J, Li E, Wei H, Li C, Qiao Q, Armaghani DJ (2019) Random Forests and Cubist Algorithms for Predicting Shear Strengths of Rockfill Materials. Appl Sci 9:1–16

@@ -1,5 +1,5 @@
 ---
-title: "2020 WSSA/WSWS Meeting Program Text Analysis"
+title: "2020 WSSA/WSWS meeting program text analysis"
 author: 
 - Maxwel C Oliveira
 - Sarah M Matos Marinho
@@ -134,13 +134,13 @@ authors_tokens &lt;- authorsdm %&gt;%
 <h3>New created vector</h3>
 <p>A new vector is named <em>titles_tokens_clean</em>.</p>
 <pre class="r"><code>head(titles_tokens_clean, n = 6)</code></pre>
-<pre><code>##       words
-## 1   program
-## 2 afternoon
-## 3     march
-## 4   general
-## 5   session
-## 6  location</code></pre>
+<pre><code>##         words
+## 1     program
+## 2.1 afternoon
+## 2.2     march
+## 3     general
+## 3.1   session
+## 4    location</code></pre>
 <p>A issue that we found is some authors have a number after their last names below the titles. For example Lindquist1, Yearka2, Tenhumberg1, Jhala1, and Werle3, numbers are given to identify their respective institutions.</p>
 <p><img src="/files/wssa/werle.png" /></p>
 <p>A solution for this problem is to create a data frame with authors’s last names with numbers from 1 to 12. To accomplish this task, we need the <em>loop</em> function again. This is the third <em>loop</em> in this text analysis; by the end of this exercise you will become an expert in using the <em>loop</em> function :)</p>
@@ -161,17 +161,17 @@ rm_authors$words &lt;- as.character(rm_authors$words)</code></pre>
 <p>Similarly, we run the <em>anti_join</em> funtion again to remove the last names with numbers for our main data frame, now named <em>titles_clean_clean</em>.</p>
 <pre class="r"><code>titles_clean_clean &lt;- anti_join(titles_tokens_clean, rm_authors, by = &quot;words&quot;)</code></pre>
 <pre class="r"><code>head(titles_clean_clean, n=10)</code></pre>
-<pre><code>##        words
-## 1    program
-## 2  afternoon
-## 3      march
-## 4    general
-## 5    session
-## 6   location
-## 7   monarchy
-## 8       time
-## 9         04
-## 10        00</code></pre>
+<pre><code>##         words
+## 1     program
+## 2.1 afternoon
+## 2.2     march
+## 3     general
+## 3.1   session
+## 4    location
+## 4.1  monarchy
+## 5        time
+## 5.1        04
+## 5.2        00</code></pre>
 </div>
 </div>
 <div id="stop-words" class="section level2">
