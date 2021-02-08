@@ -219,7 +219,7 @@ lsmeans
 > *plot* function
 
 ```{r}
-plot(lsmeans, ~ herbicide, comparisons=TRUE, type="response", alpha=0.05, adjust="none")
+plot(lsmeans$emmeans, ~ herbicide, comparisons=TRUE, type="response", alpha=0.05, adjust="none")
 ```
 
 
