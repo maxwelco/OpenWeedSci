@@ -2,7 +2,7 @@
 title: Open Weed Science
 ---
 
-# About Open Weed Science
+# About Open Weed Science 
 
 **We are** a community of Weed Scientists from around the globe passionate about Weed Biology, Ecology, Genetics and Management, and also Data Visualization and Data Analysis.
  
