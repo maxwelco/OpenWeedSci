@@ -21,7 +21,7 @@ library(textreadr)
 library(pdftools)
 library(ggtext)
 # if you do not have any of these packages installed, please run install.packages(&quot;name_of_the_package&quot;)</code></pre>
-<p>I have downloaded all <strong>NCWSS</strong> proceedings and added into a folder named “docs” (you can name the folder as you choose). You can find all PDFs in “code” (see below the post title - folder “docs”).</p>
+<p>I have downloaded all <strong>NCWSS</strong> proceedings and added into a folder named “docs” (you can name the folder as you choose). You can find all PDFs <a href="https://github.com/maxwelco/OpenWeedSci/tree/master/content/post/ncwss-text-mining">here</a> (folder “docs”).</p>
 <p>I used the <em>str_c</em> function to get all PDFs, which are in the folder “docs”. ThePDFs output contains the path for all 20 <strong>NCWSS</strong> proceedings.</p>
 <pre class="r"><code>pdfs &lt;- str_c(&quot;docs&quot;, &quot;/&quot;, list.files(&quot;docs&quot;, pattern = &quot;*.pdf&quot;), 
               sep = &quot;&quot;)
@@ -121,7 +121,7 @@ stopwords %&gt;%
 <p>Now that I have a tibble called “stopwords”, I will use <em>anti_join</em> function to remove the <strong>stopwords</strong> from <strong>pdf1</strong></p>
 <pre class="r"><code>pdf2 &lt;- pdf1 %&gt;%
   anti_join(stopwords, by = &quot;word&quot;)</code></pre>
-<p>The <em>get_stopwords</em> function with all sources attributes is not enough to remove all words needed for my goal in this analysis. For example, I do not want to have words like “virtual”, “kansas”, “werle”, “proceedings” etc. I have manually made a random “stopwords” for weed science meetings, please check the <a href="https://www.openweedsci.org/post/2020/02/25/2020-wssa/wsws-meeting-program-text-analysis/">WSSA text analysis</a>. I am bringing a “stopword” that I made in my previous analysis in a source code “stop_words.R”. You can find “stop_words.R” in the “code” below the post title.</p>
+<p>The <em>get_stopwords</em> function with all sources attributes is not enough to remove all words needed for my goal in this analysis. For example, I do not want to have words like “virtual”, “kansas”, “werle”, “proceedings” etc. I have manually made a random “stopwords” for weed science meetings, please check the <a href="https://www.openweedsci.org/post/2020/02/25/2020-wssa/wsws-meeting-program-text-analysis/">WSSA text analysis</a>. I am bringing a “stopword” that I made in my previous analysis in a source code “stop_words.R”. You can find “stop_words.R” <a href="https://github.com/maxwelco/OpenWeedSci/tree/master/content/post/ncwss-text-mining">here</a>.</p>
 <pre class="r"><code>source(&quot;stop_words.R&quot;)</code></pre>
 <p>I have saved it as <strong>stop_tibble</strong>, which is used also with <em>anti_join</em> function. The <em>anti_join</em> function as described above will remove all “stopwords” in <strong>stop_tibble</strong> from <strong>pdf2</strong>. Notice that here I am also using mutate to bring back 2,4-D.</p>
 <pre class="r"><code>pdf3 &lt;- pdf2 %&gt;% 

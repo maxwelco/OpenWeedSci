@@ -38,7 +38,7 @@ library(ggtext)
 # if you do not have any of these packages installed, please run install.packages("name_of_the_package")
 ```
 
-I have downloaded all **NCWSS** proceedings and added into a folder named “docs” (you can name the folder as you choose). You can find all PDFs in "code" (see below the post title - folder "docs").
+I have downloaded all **NCWSS** proceedings and added into a folder named “docs” (you can name the folder as you choose). You can find all PDFs [here](https://github.com/maxwelco/OpenWeedSci/tree/master/content/post/ncwss-text-mining) (folder "docs").
 
 I used the *str_c* function to get all PDFs, which are in the folder “docs”. ThePDFs output contains the path for all 20 **NCWSS** proceedings.
 
@@ -116,7 +116,7 @@ pdf2 <- pdf1 %>%
 ```
 
 
-The *get_stopwords* function with all sources attributes is not enough to remove all words needed for my goal in this analysis. For example, I do not want to have words like "virtual", "kansas", "werle", "proceedings" etc. I have manually made a random "stopwords" for weed science meetings, please check the [WSSA text analysis](https://www.openweedsci.org/post/2020/02/25/2020-wssa/wsws-meeting-program-text-analysis/). I am bringing a "stopword" that I made in my previous analysis in a source code "stop_words.R". You can find "stop_words.R" in the "code" below the post title.
+The *get_stopwords* function with all sources attributes is not enough to remove all words needed for my goal in this analysis. For example, I do not want to have words like "virtual", "kansas", "werle", "proceedings" etc. I have manually made a random "stopwords" for weed science meetings, please check the [WSSA text analysis](https://www.openweedsci.org/post/2020/02/25/2020-wssa/wsws-meeting-program-text-analysis/). I am bringing a "stopword" that I made in my previous analysis in a source code "stop_words.R". You can find "stop_words.R" [here](https://github.com/maxwelco/OpenWeedSci/tree/master/content/post/ncwss-text-mining).
 
 ```{r}
 source("stop_words.R")
