@@ -52,3 +52,8 @@ paginate = 6
 [params.banner]
    src = "/banner/logo3.png"
    alt = "alternative text on image"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
