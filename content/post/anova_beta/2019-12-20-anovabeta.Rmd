@@ -293,7 +293,7 @@ geom_linerange(aes(ymin = lower.CL*100, ymax = upper.CL*100), size=1.5) +
 theme(axis.title = element_text(size=16),
 axis.text = element_text(size=15),
 legend.position = "none") +
-coord_flip()
+coord_flip() 
 ```
 
 The mean and confidence intervals of each herbicide are displayed in the*ggplot* figure.
