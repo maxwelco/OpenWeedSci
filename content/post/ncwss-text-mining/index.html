@@ -1,8 +1,8 @@
 ---
-title: "North Central Weed Science Society Meeting Proceedings, an Overview of the XXI Century Using Text Analysis"
+title: "North Central Weed Science Society meeting proceedings, an overview of the XXI century using text analysis"
 author: 
 - Maxwel C Oliveira
-date: 2021-02-13T21:09:14-05:00
+date: 2021-02-14T21:09:14-05:00
 categories: ["Text Analysis"]
 tags: ["data analysis"]
 output: html_document
@@ -12,7 +12,7 @@ thumbnail: http://ncwss.org/wp-content/uploads/2015/03/ncwss-map1.jpg
 <script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
 
 
-<p>This text analysis is part of my abstract (co-authored with <a href="https://twitter.com/WiscWeeds">Rodrigo Werle</a> and Sarah <a href="https://twitter.com/SarahMarinho20">Marinho</a>) presented at the North Central Weed Science Society (<strong>NCWSS</strong>) meeting that was held remotely in December 2020. Here I am presenting part of that abstract, the <strong>weed species</strong> ranked among top 100 words from 2001 through 2020. I am adding to this analysis the 2020 meeting proceedings. Also, I am running the text analysis with much less coding that I have done for the <strong>NCWSS</strong> meeting. That is what I am going to show in this analysis. If you just want to see the figure, please scroll to the bottom of this page.</p>
+<p>This text analysis is part of my <a href="NCWSS_POSTER.pdf">poster</a> (co-authored with <a href="https://twitter.com/WiscWeeds">Rodrigo Werle</a> and <a href="https://twitter.com/SarahMarinho20">Sarah Marinho</a>) presented at the 2020 Virtual North Central Weed Science Society <a href="http://ncwss.org/">NCWSS</a> annual meeting (December 2020). Here I am presenting part of that abstract focused on <strong>weed species</strong> ranked amongst the top 100 words from 2001 through 2020 (I am adding the 2020 meeting proceedings to this analysis). I am also running the text analysis with less coding than for the 2020 <strong>NCWSS</strong> meeting which is what I am going to show in this analysis. If you are only interested in the final figure, please scroll to the bottom of this page.</p>
 <p><img src="ncwss.jpg" /></p>
 <p>First we have to load the packages needed for this analysis. Please run the codes below:</p>
 <pre class="r"><code>library(tidyverse)
@@ -21,8 +21,8 @@ library(textreadr)
 library(pdftools)
 library(ggtext)
 # if you do not have any of these packages installed, please run install.packages(&quot;name_of_the_package&quot;)</code></pre>
-<p>I have downloaded all <strong>NCWSS</strong> proceedings and added into a folder named docs (name of your choice). You can find all PDFs in “code” below the post title (folder docs).</p>
-<p>I used the <em>str_c</em> function to get all PDFs, which is into the folder “docs”. The pdfs output contains the path for all 20 <strong>NCWSS</strong> proceedings.</p>
+<p>I have downloaded all <strong>NCWSS</strong> proceedings and added into a folder named “docs” (you can name the folder as you choose). You can find all PDFs in “code” (see below the post title - folder “docs”).</p>
+<p>I used the <em>str_c</em> function to get all PDFs, which are in the folder “docs”. ThePDFs output contains the path for all 20 <strong>NCWSS</strong> proceedings.</p>
 <pre class="r"><code>pdfs &lt;- str_c(&quot;docs&quot;, &quot;/&quot;, list.files(&quot;docs&quot;, pattern = &quot;*.pdf&quot;), 
               sep = &quot;&quot;)
 pdfs </code></pre>
@@ -31,18 +31,18 @@ pdfs </code></pre>
 ##  [9] &quot;docs/nc2009.pdf&quot; &quot;docs/nc2010.pdf&quot; &quot;docs/nc2011.pdf&quot; &quot;docs/nc2012.pdf&quot;
 ## [13] &quot;docs/nc2013.pdf&quot; &quot;docs/nc2014.pdf&quot; &quot;docs/nc2015.pdf&quot; &quot;docs/nc2016.pdf&quot;
 ## [17] &quot;docs/nc2017.pdf&quot; &quot;docs/nc2018.pdf&quot; &quot;docs/nc2019.pdf&quot; &quot;docs/nc2020.pdf&quot;</code></pre>
-<p>Next you will named all these pdfs. If you run the code below, <em>list.files</em> will keep the PDFs names as shown in the code above.</p>
+<p>Next you will name all PDFs. If you run the code below, <em>list.files</em> will keep the PDFs names as shown in the code above.</p>
 <pre class="r"><code>pdf_names &lt;- list.files(&quot;docs&quot;, pattern = &quot;*.pdf&quot;)
 pdf_names</code></pre>
 <pre><code>##  [1] &quot;nc2001.pdf&quot; &quot;nc2002.pdf&quot; &quot;nc2003.pdf&quot; &quot;nc2004.pdf&quot; &quot;nc2005.pdf&quot;
 ##  [6] &quot;nc2006.pdf&quot; &quot;nc2007.pdf&quot; &quot;nc2008.pdf&quot; &quot;nc2009.pdf&quot; &quot;nc2010.pdf&quot;
 ## [11] &quot;nc2011.pdf&quot; &quot;nc2012.pdf&quot; &quot;nc2013.pdf&quot; &quot;nc2014.pdf&quot; &quot;nc2015.pdf&quot;
 ## [16] &quot;nc2016.pdf&quot; &quot;nc2017.pdf&quot; &quot;nc2018.pdf&quot; &quot;nc2019.pdf&quot; &quot;nc2020.pdf&quot;</code></pre>
-<p>Here is where the magic occurs, I will use the function <em>map</em> of the package <strong>purrr</strong> (tidyverse core). Using <em>map</em> function sames a lot of coding and time.</p>
+<p>Here is where the magic occurs, I will use the function <em>map</em> of the package <strong>purrr</strong> (tidyverse core). Using <em>map</em> function saves coding and time.</p>
 <p><img src="https://media.giphy.com/media/l2YWs1NexTst9YmFG/giphy.gif" /></p>
 <pre class="r"><code>pdfs_text &lt;- map(pdfs, pdftools::pdf_text)</code></pre>
 <p>This “magic” is called iteration, so instead of running the analysis by each year we can run it all together. Running <em>pdfs_text</em> alone you get you all proceedings organized as a list. I am not running <em>pdfs_text</em> here because it is a large output. Nonetheless, <em>pdfs_text</em> is not tidy for the analysis yet.</p>
-<p>The iteration with <em>map</em> function should be proceeded with a <em>tibble</em> function to organize the proceedings by each year.</p>
+<p>The iteration with <em>map</em> function should be proceeded with a <em>tibble</em> function to organize the proceedings of each year.</p>
 <pre class="r"><code>pdf &lt;- tibble(document = pdf_names, text = pdfs_text) %&gt;% 
   mutate(year = 2001:2020) # adding a column for each year
 pdf</code></pre>
@@ -95,7 +95,7 @@ pdf1 %&gt;%
 ##  8 nc2001.pdf  2001 universities
 ##  9 nc2001.pdf  2001 thomas      
 ## 10 nc2001.pdf  2001 s</code></pre>
-<p>You have notice that I used <em>mutate</em> function to change 2,4-D to “twofourd” because tokenization would split it in 2, 4 and D. Also because of their dual names, I have made marestail = horseweed.</p>
+<p>Notice that I used <em>mutate</em> function to change 2,4-D to “twofourd” because tokenization would split it in 2, 4 and D. Because the species has more than one common name, I treat marestail = horseweed.</p>
 <p>Next we need to remove the “stopwords”. Stopwords are words like “in”, “and”, “at”, “their”, “about” etc. The function <em>get_stopwords</em> from tidytext package has five “stopword” sources, I will add them all and stored in <em>stopwords</em>. See below:</p>
 <pre class="r"><code>stopwords &lt;- get_stopwords(&quot;en&quot;, source = c(&quot;smart&quot;)) %&gt;% 
   bind_rows(get_stopwords(&quot;en&quot;, source = c(&quot;marimo&quot;))) %&gt;% 
@@ -127,14 +127,14 @@ stopwords %&gt;%
 <pre class="r"><code>pdf3 &lt;- pdf2 %&gt;% 
   anti_join(stop_tibble, by = c(&quot;word&quot;)) %&gt;% # stop_tibble is in the source code
   mutate(word = str_replace(word, &quot;twofourd&quot;, &quot;2,4-d&quot;)) # bring back 2,4-d</code></pre>
-<p>Next I will use functions to <em>count</em> words over the years, <em>arrange</em> it as descending, <em>group_by</em> year, rank top 100 words (<em>row_number</em>) and <em>filter</em> the top 100 words by each year.</p>
+<p>Next I will use functions to <em>count</em> words over the years, <em>arrange</em> it as descending, <em>group_by</em> year, rank top 100 words (<em>row_number</em>) and <em>filter</em> the top 100 words by year.</p>
 <pre class="r"><code>pdf4 &lt;- pdf3 %&gt;% 
   count(year, word) %&gt;% 
   arrange(year, -n) %&gt;% 
   group_by(year) %&gt;% 
   mutate(rank = row_number()) %&gt;% 
   filter(rank &lt;= 100)</code></pre>
-<p>Now I have the top 100 words by each year:</p>
+<p>Now I have the top 100 words for each year (<strong>NCWSS</strong> proceedinds):</p>
 <pre class="r"><code>pdf4 %&gt;% 
   slice_head(n = 10)</code></pre>
 <pre><code>## # A tibble: 200 x 4
@@ -226,7 +226,7 @@ cols &lt;- c(&quot;#F2D9F3&quot;, &quot;#F2D9F3&quot;, &quot;#00E5E5&quot;, &quo
           &quot;#FAC8C8&quot;, &quot;#39393A&quot;, &quot;#FA9664&quot;, 
           &quot;#FF4040&quot;, &quot;#48DE7A&quot;, &quot;#942DC7&quot;, 
           &quot;#F5F5DC&quot;, &quot;#FAFA00&quot;)</code></pre>
-<p>Then I will plot the data. The idea here is to see the difference between weeds from top 100 words in 2001 and 2020.</p>
+<p>Then I will plot the data. The idea here is to see the trend in weeds within the top 100 words from 2001 through 2020.</p>
 <pre class="r"><code>figure &lt;- pdf5 %&gt;% 
   ggplot(aes(x = year, y = rank, group = word)) +
   geom_line(data = pdf5 %&gt;% filter(variable_col == &quot;NA&quot;),
@@ -264,8 +264,15 @@ cols &lt;- c(&quot;#F2D9F3&quot;, &quot;#F2D9F3&quot;, &quot;#00E5E5&quot;, &quo
 
 #Export plot 
 ggsave(&quot;top_weeds.png&quot;, width = 40, height = 60, dpi=400, limitsize = FALSE, figure)</code></pre>
-<p>Check the figure carefully. What were you doing in 2001? What do you think have changed across 20 years? What is the same? Make your own conclusions.</p>
+<p>Check the figure carefully. What were scientists in the society focused on in 2001? What has changed in 20 years? What hasn’t? Draw your own conclusions.</p>
 <p><img src="top_weeds.png" /></p>
 <p>This figure was adapted from one of <a href="https://twitter.com/JaredBraggins">JaredBraggins</a> Tidy Tuesday visualizations.</p>
 <hr />
 <p>Click <a href="(https://juliasilge.com/blog/learn-tidytext-learnr/)">here</a> to learn more about Tidy Text with Julia Silge.</p>
+<table>
+<tbody>
+<tr class="odd">
+<td>Thanks to Rodrigo Werle for reviewing this post.</td>
+</tr>
+</tbody>
+</table>
