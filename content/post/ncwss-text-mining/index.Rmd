@@ -1,0 +1,274 @@
+---
+title: "North Central Weed Science Society Meeting Proceedings, an Overview of the XXI Century Using Text Analysis"
+author: 
+- Maxwel C Oliveira
+date: 2021-02-14T21:13:14-05:00
+categories: ["Text Analysis"]
+tags: ["data analysis"]
+output: html_document
+--- 
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE
+  )
+```
+
+
+
+This text analysis is part of my abstract (co-authored with [Rodrigo Werle](https://twitter.com/WiscWeeds) and Sarah [Marinho](https://twitter.com/SarahMarinho20)) presented at the North Central Weed Science Society (**NCWSS**) meeting that was held remotely in December 2020. Here I am presenting part of that abstract, the **weed species** ranked among top 100 words from 2001 through 2020. I am adding to this analysis the 2020 meeting proceedings. Also, I am running the text analysis with much less coding that I have done for the **NCWSS** meeting. That is what I am going to show in this analysis. If you just want to see the figure, please scroll to the bottom of this page. 
+
+![](ncwss.jpg)
+
+
+First we have to load the packages needed for this analysis. Please run the codes below: 
+
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(textreadr)
+library(pdftools)
+library(ggtext)
+# if you do not have any of these packages installed, please run install.packages("name_of_the_package")
+```
+
+I have downloaded all **NCWSS** proceedings and added into a folder named docs (name of your choice). You can find all PDFs in "code" below the post title (folder docs). 
+
+I used the *str_c* function to get all PDFs, which is into the folder "docs". The pdfs output contains the path for all 20 **NCWSS** proceedings.
+
+```{r name-pdfs}
+pdfs <- str_c("docs", "/", list.files("docs", pattern = "*.pdf"), 
+              sep = "")
+pdfs 
+```
+
+Next you will named all these pdfs. If you run the code below, *list.files* will keep the PDFs names as shown in the code above. 
+
+```{r}
+pdf_names <- list.files("docs", pattern = "*.pdf")
+pdf_names
+```
+
+Here is where the magic occurs, I will use the function *map* of the package **purrr** (tidyverse core). Using *map* function sames a lot of coding and time.
+
+![](https://media.giphy.com/media/l2YWs1NexTst9YmFG/giphy.gif)
+
+```{r}
+pdfs_text <- map(pdfs, pdftools::pdf_text)
+```
+
+This "magic" is called iteration, so instead of running the analysis by each year we can run it all together. Running *pdfs_text* alone you get you all proceedings organized as a list. I am not running *pdfs_text* here because it is a large output. Nonetheless, *pdfs_text* is not tidy for the analysis yet.
+
+The iteration with *map* function should be proceeded with a *tibble* function to organize the proceedings by each year.
+
+```{r}
+pdf <- tibble(document = pdf_names, text = pdfs_text) %>% 
+  mutate(year = 2001:2020) # adding a column for each year
+pdf
+```
+As you can see in the tibble (data frame) above, each proceeding is stored as a list by each year (e.g., <chr [248]>). 
+
+Now that we have a tidy tibble, we can proceed with the [tokenization](https://www.tidytextmining.com/tidytext.html) using the function *unnest_tokens*.
+
+
+```{r unnest-tokens}
+pdf1 <- pdf %>% 
+  unnest(text) %>% # pdfs_text is a list
+  mutate(text = str_to_lower(text), # making all text lower case
+         text = str_replace(text, "2,4-d", 
+                            "twofourd"), # need to replace it
+         text = str_replace(text, "marestail", 
+                            "horseweed")) %>% # marestail = horseweed
+  unnest_tokens(word, text, strip_numeric = TRUE)
+
+pdf1 %>% 
+  slice_head(n = 10)
+```
+
+You have notice that I used *mutate* function to change 2,4-D to "twofourd" because tokenization would split it in 2, 4 and D. Also because of their dual names, I have made marestail = horseweed. 
+
+Next we need to remove the "stopwords". Stopwords are words like "in", "and", "at", "their", "about" etc. The function *get_stopwords* from tidytext package has five "stopword" sources, I will add them all and stored in *stopwords*. See below:
+
+```{r stopwords}
+stopwords <- get_stopwords("en", source = c("smart")) %>% 
+  bind_rows(get_stopwords("en", source = c("marimo"))) %>% 
+  bind_rows(get_stopwords("en", source = c("nltk"))) %>% 
+  bind_rows(get_stopwords("en", source = c("stopwords-iso"))) %>% 
+  bind_rows(get_stopwords("en", source = c("snowball")))
+
+stopwords %>% 
+  slice_head(n=10)
+```
+
+Now that I have a tibble called "stopwords", I will use *anti_join* function to remove the **stopwords** from **pdf1**
+
+```{r stopwords-1}
+pdf2 <- pdf1 %>%
+  anti_join(stopwords, by = "word")
+```
+
+
+The *get_stopwords* function with all sources attributes is not enough to remove all words needed for my goal in this analysis. For example, I do not want to have words like "virtual", "kansas", "werle", "proceedings" etc. I have manually made a random "stopwords" for weed science meetings, please check the [WSSA text analysis](https://www.openweedsci.org/post/2020/02/25/2020-wssa/wsws-meeting-program-text-analysis/). I am bringing a "stopword" that I made in my previous analysis in a source code "stop_words.R". You can find "stop_words.R" in the "code" below the post title.
+
+```{r}
+source("stop_words.R")
+```
+
+I have saved it as **stop_tibble**, which is used also with *anti_join* function. The *anti_join* function as described above will remove all "stopwords" in **stop_tibble** from **pdf2**. Notice that here I am also using mutate to bring back 2,4-D. 
+
+```{r cleaning}
+pdf3 <- pdf2 %>% 
+  anti_join(stop_tibble, by = c("word")) %>% # stop_tibble is in the source code
+  mutate(word = str_replace(word, "twofourd", "2,4-d")) # bring back 2,4-d
+```
+
+Next I will use functions to *count* words over the years, *arrange* it as descending, *group_by* year, rank top 100 words (*row_number*) and *filter* the top 100 words by each year. 
+
+```{r}
+pdf4 <- pdf3 %>% 
+  count(year, word) %>% 
+  arrange(year, -n) %>% 
+  group_by(year) %>% 
+  mutate(rank = row_number()) %>% 
+  filter(rank <= 100)
+```
+
+Now I have the top 100 words by each year:
+
+```{r}
+pdf4 %>% 
+  slice_head(n = 10)
+```
+
+In this analysis I am interested only on weeds present in the top 100 words in 2001 and 2020. Therefore, I am using *if_else* function to create new columns for highlighting selected weed species. You can change and select any word if want as I did it with herbicides in my poster at the 2020 **NCWSS** meeting.
+
+```{r}
+pdf5 <- pdf4 %>% 
+  mutate(highlight = if_else(word %in% c("amaranth", "palmer", 
+                                         "kochia", "horseweed", 
+                                         "grass", "nightshade", 
+                                         "waterhemp", "velvetleaf", 
+                                         "ragweed", "sunflower",
+                                         "foxtail"), TRUE, FALSE),
+       variable_col = if_else(highlight == TRUE, word, "NA"))
+
+pdf5 %>% 
+  slice_head(n = 5)
+```
+
+
+Now the tibble is ready. Then, I will proceed with data visualization. First I will set the font family, colors and theme. 
+
+
+```{r}
+#Set theme
+library(extrafont)
+extrafont::loadfonts()
+font_family <- 'Helvetica'
+title_family <- ".New York"
+background <- "#1D1D1D"
+text_colour <- "white"
+axis_colour <- "white"
+plot_colour <- "black"
+theme_style <- theme(text = element_text(family = font_family),
+                  rect = element_rect(fill = background),
+                  plot.background = element_rect(fill = background, color = NA),
+                  plot.title = element_markdown(family = title_family,
+                                            face = 'bold', size = 80, colour = text_colour),
+                  plot.subtitle = element_markdown(family = title_family, 
+                                                   size = 40, colour = text_colour),
+                  plot.caption = element_markdown(family = title_family,
+                                              size = 25, colour = text_colour, hjust = 0),
+                  panel.background = element_rect(fill = background, color = NA),
+                  panel.border = element_blank(),
+                  panel.grid.major.y = element_blank(),
+                  panel.grid.major.x = element_blank(),
+                  panel.grid.minor.x = element_blank(),
+                  plot.margin = unit(c(3, 0.5, 0.5, 0.5), "cm"), # top, left, bottom, right
+                  axis.title.y = element_text(face = 'bold', size = 40, 
+                                              colour = text_colour),
+                  axis.title.x = element_blank(),
+                  axis.text.x.bottom = element_text(size = 45, colour= axis_colour, 
+                                                    vjust = 17),
+                  axis.text.x.top = element_text(size = 45, colour= axis_colour, 
+                                                    vjust = -14),
+                  axis.text.y = element_text(size = 30, colour = text_colour),
+                  axis.ticks = element_blank(),
+                  axis.line = element_blank(),
+                  legend.text = element_text(size = 20, colour= text_colour),
+                  legend.title = element_text(size = 25, colour= text_colour),
+                  legend.position="none") 
+
+
+theme_set(theme_classic() + theme_style)
+
+#Set colour palette
+cols <- c("#F2D9F3", "#F2D9F3", "#00E5E5", "#DEB887", 
+          "#FAC8C8", "#39393A", "#FA9664", 
+          "#FF4040", "#48DE7A", "#942DC7", 
+          "#F5F5DC", "#FAFA00")
+```
+
+
+Then I will plot the data. The idea here is to see the difference between weeds from top 100 words in 2001 and 2020.
+
+
+```{r}
+figure <- pdf5 %>% 
+  ggplot(aes(x = year, y = rank, group = word)) +
+  geom_line(data = pdf5 %>% filter(variable_col == "NA"),
+                                      color = "#39393A", size = 4) +
+  geom_point(data = pdf5 %>% filter(variable_col == "NA"),
+                                      color = "#39393A", size = 10) +
+  geom_line(data = pdf5 %>% filter(variable_col != "NA"),
+                                       aes(color = variable_col), size = 4) +
+  geom_point(data = pdf5 %>% filter(variable_col != "NA"),
+                                       aes(color = variable_col), size = 10) +
+  scale_y_reverse(breaks = 100:1, sec.axis = dup_axis()) +
+  scale_x_continuous(breaks = seq(2001, 2020, 2), limits= c(1999.8, 2021.2), 
+                     expand = c(.05, .05), sec.axis = dup_axis()) +
+  geom_text(data = pdf5 %>% filter(year == "2001"),
+            aes(label = word, x = 2000.8, color = variable_col),
+            hjust = "right",
+            fontface = "bold",
+            size = 11) +
+  geom_text(data = pdf5 %>%  filter(year == "2020"),
+            aes(label = word, x = 2020.2, color = variable_col),
+            hjust = "left",
+            fontface = "bold",
+            size = 11) +
+  coord_cartesian(ylim = c(101,1)) +
+   scale_color_manual(values = cols) +
+  labs(title = "<b style='color:red;'>NCWSS</b> annual meeting 
+       proceedinds text analysis from 2001 through 2020",
+       subtitle = "Figure shows the rank of top 100 words of 2001 (left) 
+       and 2020 (right) <b style='color:red;'>NCWSS</b> annual meeting proceedings. 
+       Common weed species names are highlighed to <br> describe 
+       their change across 20 years.", 
+       y= "Rank",
+       caption = "Visualization: @maxwelco adapted from @JaredBraggins | Source: NCWSS") 
+
+
+#Export plot 
+ggsave("top_weeds.png", width = 40, height = 60, dpi=400, limitsize = FALSE, figure)
+```
+
+
+Check the figure carefully. What were you doing in 2001? What do you think have changed across 20 years? What is the same? Make your own conclusions.
+
+
+![](top_weeds.png)
+
+This figure was adapted from one of [JaredBraggins](https://twitter.com/JaredBraggins) Tidy Tuesday visualizations. 
+
+This post will be available soon at the [Open Weed Science](https://www.openweedsci.org/).
+
+---
+
+Click [here]((https://juliasilge.com/blog/learn-tidytext-learnr/)) to learn more about Tidy Text with Julia Silge.
+

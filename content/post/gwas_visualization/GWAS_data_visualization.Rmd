@@ -1,0 +1,223 @@
+---
+title: "GWAS data visualization in R"
+author:  
+- Lucas Kopecky Bobadilla
+date: 2020-03-18T21:13:14-05:00
+categories: ["Bioinformatics"]
+tags: ["Genomics"]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Introduction - What is GWAS?
+
+**GWAS (Genome-wide association studies)** is a common study when you want to check genetic variability in a genomic scale.  GWAS will mainly focus on the association between single-nucleotide polymorthisms (SNPs) and traits such as herbicide resistance or some sort of disease. GWAS can be applied to any organisms and species where you want to study variation between different phenotype. GWAS studies investigate the entire genome, in contrast to methods that specifically test a small number of pre-specified genetic regions. 
+
+In other words, GWAS is not made to identify gene-specific candidate genes. GWAS studies can be a valuable approach in weed science to help us to identify traits and weed characteristics that could help us better understand how to control it and even how to use some other traits for breeding purposes. GWAS is also a hypothesis-free approach since you are looking for clues in the entire genome to support your potential hypothesis about your trait of interest.
+
+GWAS data is commonly analyzed using a **Manhattan plot** which is a type of scatter-plot used to display significant SNPs. In a **Manhattan plot** the x-axis will display the genomic coordinates per chromosome and the y-axis will display the association *p*-value for each single-nucleotide. This post will focus in the design of a Manhattan plot using ggplot.
+
+Here are the packages that will use for creating the Manhattan plot:
+
+```{r packages, message=FALSE, warning=FALSE}
+library(tidyverse) # tidyverse packages
+library(RColorBrewer) # complement to ggplot
+library(ggrepel) # complement to ggplot
+library(kableExtra) # table layout
+```
+
+\newline
+
+## How can we conduct a GWAS?
+
+A GWAS experiment have many steps. Since this post will focused in how create a nice visualization plot for your GWAS data, I will cover only the basics. For this example I will use a adapted available data from a Alzheimer’s disease study. Why not use a plant study? I will discuss this later, for a GWAS study a reference genome is required so we will use a human data due to the easy access to the genome (there are ways to go around this, but for the sake of this post lets just assume the genome of reference issue).
+
+To conduct a GWAS here are some basic steps and key points to consider before visualization of the data:
+
+1. **Case/control set up**
+
+As most of our weed science studies, the first step is to select individuals (or plants) that does not have the trait of interest. In this data we have 188 controls and 176 cases. There are other approaches that you can use for your GWAS study.
+
+2. **Reference genome**
+
+As mentioned previously, for this analysis we used the reference human genome **GRCh38.p13** that can be found at [NCBI](https://www.ncbi.nlm.nih.gov/assembly/GCF_000001405.39). We will use this genome to calculate the odds-ratio and p-values for each SNP from both cases.
+
+3. **Linkage-disequilibrium and Population structure**
+
+Before calculation of association is important to check for linkage-disequilibrium, population structure or any other confounding variable that can affect your results. Population structure is defined by the organization of genetic variation and is driven by the combined effects of evolutionary processes that include recombination, mutation, genetic drift, demographic history, and natural selection. Linkage-disequilibrium refers to the non-random association of alleles at different loci in a given population. It is important to account for this factors when designing your GWAS studies
+
+## Analysis
+
+### Statistical analysis
+
+The initial GWAS statistical analysis needs to be done prior plotting the data. This initial steps will not be done here due to the time to run the programs and also because this analysis was not conducted in R. For this analysis, here are some options you can use:
+
+* [Plink](http://zzz.bwh.harvard.edu/plink/index.shtml): I decided to use this software based on Linux system. This software is well known for GWAS studies and I recommend it due to the speed of processing data on it.
+
+* [Tassel](https://www.maizegenetics.net/tassel): Tassel is commonly used in plant breeding studies, specially in Maize. You can also used it in R!
+
+After running the data in **Plink** here are the data-set results obtained from plink:
+
+Click here to download the data: https://drive.google.com/file/d/1OPbKktDUN4izxhcrcA1EtgAdhvWThDF8/view?usp=sharing
+
+```{r load data, message=FALSE, warning=FALSE}
+# load data
+plink.result <- read_table2("/Users/maxwelco/Documents/OpenWeedSci/static/analysis1.assoc.logistic") # change to your root directory
+
+head(plink.result) # get first 5 lines
+glimpse(plink.result) # check data stucture
+```
+
+As you can see, this is a very big data-set where we have almost 1.5 million observations and 10 variables:
+
+* CHR = Chromosome
+* SNP = Single-nucleotide polymorphism
+* BP = Base-pair coordinate
+* A1 = Allele 1
+* TEST = Test identifier
+* NMISS = Number of observations (non-missing genotype, phenotype, and covariates)
+* OD = odds(allele 1 | case) / odds(allele 1 | control)
+* STAT = T-statistic
+* P = Asymptotic p-value for t-statistic
+
+Now lets do some data cleaning to transform some variables to factor and remove the last column that does not mean anything. We are also filtering the data only for `TEST = ADD` to only plot the data points corresponding to SNP effect:
+
+```{r message=FALSE, warning=FALSE}
+df_clean <- plink.result %>% 
+  filter(TEST == "ADD") %>% 
+  select(-X10) #  Remove all rows that don’t correspond to testing the SNP effect 
+
+fac <- c("CHR","SNP", "A1", "TEST") # select columns to be factor
+
+df_clean[fac] <- lapply(df_clean[fac], factor) # transform columns to factor
+
+glimpse(df_clean) # check new data stucture
+```
+
+Now we have a smaller (still big) data-set with almost 250,000 observations and we can go forward and create our Manhattan plot.
+
+### Manhattan plot
+
+To create the Manhattan plot, I will create a function that takes two arguments (df = dataframe and threshold of SNP significance) was created following three steps:
+
+1. **Compute the cumulative position of SNP (BPcum)** and add it to the data set. This was done by grouping the filtered data by chromosome and summarizing the Max BP for each chromosome. After that, using mutate I calculated total length by subtracting the cumulative chromosome length by the chromosome length and them use left join to add this into the data. A final step was arranging by chromosome and base pairs and create another column named BPcum to get the cumulative position of SNPs.
+
+2. The second step was to **prepare the x-axis to be used in the plot**. By centering each chromosome to the middle point of the BPcum.
+
+3. The final step is to **create the plot**. To do this I used ggplot where I specify the x as BPcum and y as the -log10 of the P-values. After that, I created a `geom_point` layer by mapping color to Chromosome; color was defined by using the `scale_color_manual` function where each chromosome was map in two colors. To use the previous created x-axis we defined it using the function `scale_x_continuous`. Other aesthetic values were defined using the `theme` function and `geom_rapel` from the package `ggrapel` was used to annotate the significant SNPs with another `geom_point` function to highlight those points as well. Dashed line represent the defined threshold.
+
+Lets implement our plot function:
+
+```{r function plot}
+
+manh_plot <- function(df, threshold) {
+  
+  ### 1. Compute the cumulative position of SNP ### 
+  plot_data <- df %>%   
+  # Compute chromosome size
+  group_by(CHR) %>% 
+  summarise(chr_len=as.numeric(max(BP))) %>% 
+  # Calculate cumulative position of each chromosome
+  mutate(tot=cumsum(chr_len)-chr_len) %>%
+  select(-chr_len) %>%
+  # Add this info to the initial dataset
+  left_join(df_clean, ., by=c("CHR"="CHR")) %>%
+  # Add a cumulative position of each SNP
+  arrange(CHR, BP) %>%
+  mutate( BPcum=as.numeric(BP+tot))
+  
+  ### 2. Generate x-axis ###
+  axisdf <- plot_data %>% 
+  group_by(CHR) %>% 
+  summarize(center=(max(BPcum) + min(BPcum)) / 2 )
+  
+  ### 3. create plot ###
+  plot <- ggplot(plot_data, aes(x=BPcum, y=-log10(P))) + 
+  #specify the y and x values
+  geom_point( aes(color=as.factor(CHR)), alpha=0.8, size=1.3) + 
+  # create scatterplot colored by chromosome
+  scale_color_manual(values = rep(c("#E2709A", "#CB4577", 
+                                    "#BD215B", "#970F42", 
+                                    "#75002B"), 22)) + 
+  # set a colour pattern 
+  scale_x_continuous(label = axisdf$CHR, breaks= axisdf$center) + 
+  # scale the x-axis
+  scale_y_continuous(expand = c(0, 0)) + 
+  # remove space between plot area and x axis
+  ylim(0,20) +
+  theme_light() +
+  theme(legend.position="none",
+        panel.border = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        axis.line = element_line(color = "black")) +
+  xlab("Chromosome") + 
+  # add x label
+  geom_label_repel( data=plot_data %>% filter(P < threshold), # add annotation value
+                    aes(label=SNP), size=3) + # add annotation
+    geom_point(data= plot_data %>% filter(P < threshold), # add annotation value
+               color="orange", size=2) + # Add highlighted points 
+  geom_hline(yintercept = -log10(threshold), linetype="dashed") # threshold line
+
+  return(plot) # return the final plot
+}
+
+```
+
+
+Now lets run our function! For our function we will set our threshold for SNP negative log p-value significance of $10^{-10}$. This value is defined by you based on your data.
+
+```{r run function, fig.align="center", message=FALSE, warning=FALSE}
+
+plot <- manh_plot(df_clean, threshold = 10^-10) # run function
+plot
+```
+
+Great! It works looks like we have two major SNPs in our dataset. It seems that those SNPs are located in the chromossome 19. Lets take a look by zooming on it using the ggplot function `coord_cartesian()`. 
+
+However, before doing it we need to identify the coordinates limits of each chromosome in the our genomic data. To do that lets use some tidyverse functions such as `group by` and summarize:
+
+```{r identify limits, message=FALSE, warning=FALSE}
+
+# Identify max and min values for BPcum ##
+kable(df_clean %>%
+  # Compute chromosome size
+  group_by(CHR) %>% 
+  summarise(chr_len=as.numeric(max(BP))) %>% 
+  # Calculate cumulative position of each chromosome
+  mutate(tot=cumsum(chr_len)-chr_len) %>%
+  select(-chr_len) %>%
+  # Add this info to the initial dataset
+  left_join(df_clean, ., by=c("CHR"="CHR")) %>%
+  # Add a cumulative position of each SNP
+  arrange(CHR, BP) %>%
+  mutate(BPcum=as.numeric(BP+tot)) %>% 
+  group_by(CHR) %>% 
+  summarize(`Upper limit` = max(BPcum),
+            `Lower limit` = min(BPcum))) %>%
+  kable_styling()
+
+```
+
+It seems that our chromosome is on the 2639657374 and 2703230392 limit lets plot it!
+
+```{r plot chromosome 19, fig.align="center"}
+## plot only chromossome 19 according to the above values
+plot +
+  coord_cartesian(xlim = c(2639657374, 2703230392))
+```
+
+
+## Conclusion
+
+With this codes you can create your own (and customizable) Manhattan plot! That are many other analysis that you can do in a GWAS studies; it is a vast and amazing research approach that weed scientist can (and should) use!
+
+
+
+
+
+
+

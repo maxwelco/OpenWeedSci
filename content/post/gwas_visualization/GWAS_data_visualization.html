@@ -1,0 +1,488 @@
+---
+title: "GWAS data visualization in R"
+author:  
+- Lucas Kopecky Bobadilla
+date: 2020-03-18T21:13:14-05:00
+categories: ["Bioinformatics"]
+tags: ["Genomics"]
+---
+
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+
+
+<div id="introduction---what-is-gwas" class="section level2">
+<h2>Introduction - What is GWAS?</h2>
+<p><strong>GWAS (Genome-wide association studies)</strong> is a common study when you want to check genetic variability in a genomic scale. GWAS will mainly focus on the association between single-nucleotide polymorthisms (SNPs) and traits such as herbicide resistance or some sort of disease. GWAS can be applied to any organisms and species where you want to study variation between different phenotype. GWAS studies investigate the entire genome, in contrast to methods that specifically test a small number of pre-specified genetic regions.</p>
+<p>In other words, GWAS is not made to identify gene-specific candidate genes. GWAS studies can be a valuable approach in weed science to help us to identify traits and weed characteristics that could help us better understand how to control it and even how to use some other traits for breeding purposes. GWAS is also a hypothesis-free approach since you are looking for clues in the entire genome to support your potential hypothesis about your trait of interest.</p>
+<p>GWAS data is commonly analyzed using a <strong>Manhattan plot</strong> which is a type of scatter-plot used to display significant SNPs. In a <strong>Manhattan plot</strong> the x-axis will display the genomic coordinates per chromosome and the y-axis will display the association <em>p</em>-value for each single-nucleotide. This post will focus in the design of a Manhattan plot using ggplot.</p>
+<p>Here are the packages that will use for creating the Manhattan plot:</p>
+<pre class="r"><code>library(tidyverse) # tidyverse packages
+library(RColorBrewer) # complement to ggplot
+library(ggrepel) # complement to ggplot
+library(kableExtra) # table layout</code></pre>
+
+</div>
+<div id="how-can-we-conduct-a-gwas" class="section level2">
+<h2>How can we conduct a GWAS?</h2>
+<p>A GWAS experiment have many steps. Since this post will focused in how create a nice visualization plot for your GWAS data, I will cover only the basics. For this example I will use a adapted available data from a Alzheimer’s disease study. Why not use a plant study? I will discuss this later, for a GWAS study a reference genome is required so we will use a human data due to the easy access to the genome (there are ways to go around this, but for the sake of this post lets just assume the genome of reference issue).</p>
+<p>To conduct a GWAS here are some basic steps and key points to consider before visualization of the data:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Case/control set up</strong></li>
+</ol>
+<p>As most of our weed science studies, the first step is to select individuals (or plants) that does not have the trait of interest. In this data we have 188 controls and 176 cases. There are other approaches that you can use for your GWAS study.</p>
+<ol start="2" style="list-style-type: decimal">
+<li><strong>Reference genome</strong></li>
+</ol>
+<p>As mentioned previously, for this analysis we used the reference human genome <strong>GRCh38.p13</strong> that can be found at <a href="https://www.ncbi.nlm.nih.gov/assembly/GCF_000001405.39">NCBI</a>. We will use this genome to calculate the odds-ratio and p-values for each SNP from both cases.</p>
+<ol start="3" style="list-style-type: decimal">
+<li><strong>Linkage-disequilibrium and Population structure</strong></li>
+</ol>
+<p>Before calculation of association is important to check for linkage-disequilibrium, population structure or any other confounding variable that can affect your results. Population structure is defined by the organization of genetic variation and is driven by the combined effects of evolutionary processes that include recombination, mutation, genetic drift, demographic history, and natural selection. Linkage-disequilibrium refers to the non-random association of alleles at different loci in a given population. It is important to account for this factors when designing your GWAS studies</p>
+</div>
+<div id="analysis" class="section level2">
+<h2>Analysis</h2>
+<div id="statistical-analysis" class="section level3">
+<h3>Statistical analysis</h3>
+<p>The initial GWAS statistical analysis needs to be done prior plotting the data. This initial steps will not be done here due to the time to run the programs and also because this analysis was not conducted in R. For this analysis, here are some options you can use:</p>
+<ul>
+<li><p><a href="http://zzz.bwh.harvard.edu/plink/index.shtml">Plink</a>: I decided to use this software based on Linux system. This software is well known for GWAS studies and I recommend it due to the speed of processing data on it.</p></li>
+<li><p><a href="https://www.maizegenetics.net/tassel">Tassel</a>: Tassel is commonly used in plant breeding studies, specially in Maize. You can also used it in R!</p></li>
+</ul>
+<p>After running the data in <strong>Plink</strong> here are the data-set results obtained from plink:</p>
+<p>Click here to download the data: <a href="https://drive.google.com/file/d/1OPbKktDUN4izxhcrcA1EtgAdhvWThDF8/view?usp=sharing" class="uri">https://drive.google.com/file/d/1OPbKktDUN4izxhcrcA1EtgAdhvWThDF8/view?usp=sharing</a></p>
+<pre class="r"><code># load data
+plink.result &lt;- read_table2(&quot;/Users/maxwelco/Documents/OpenWeedSci/static/analysis1.assoc.logistic&quot;) # change to your root directory
+
+head(plink.result) # get first 5 lines</code></pre>
+<pre><code>## # A tibble: 6 x 10
+##     CHR SNP           BP A1    TEST  NMISS      OR   STAT      P X10  
+##   &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;
+## 1     1 rs3094315 792429 C     ADD     339 1.47     1.76  0.0791 &lt;NA&gt; 
+## 2     1 rs3094315 792429 C     COV1    339 0.417   -0.420 0.674  &lt;NA&gt; 
+## 3     1 rs3094315 792429 C     COV2    339 0.00531 -2.46  0.0137 &lt;NA&gt; 
+## 4     1 rs3094315 792429 C     COV3    339 1.82     0.293 0.770  &lt;NA&gt; 
+## 5     1 rs3094315 792429 C     COV4    339 0.446   -0.396 0.692  &lt;NA&gt; 
+## 6     1 rs3094315 792429 C     COV5    339 2.71     0.490 0.624  &lt;NA&gt;</code></pre>
+<pre class="r"><code>glimpse(plink.result) # check data stucture</code></pre>
+<pre><code>## Rows: 1,485,344
+## Columns: 10
+## $ CHR   &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …
+## $ SNP   &lt;chr&gt; &quot;rs3094315&quot;, &quot;rs3094315&quot;, &quot;rs3094315&quot;, &quot;rs3094315&quot;, &quot;rs3094315&quot;…
+## $ BP    &lt;dbl&gt; 792429, 792429, 792429, 792429, 792429, 792429, 819185, 819185,…
+## $ A1    &lt;chr&gt; &quot;C&quot;, &quot;C&quot;, &quot;C&quot;, &quot;C&quot;, &quot;C&quot;, &quot;C&quot;, &quot;G&quot;, &quot;G&quot;, &quot;G&quot;, &quot;G&quot;, &quot;G&quot;, &quot;G&quot;, &quot;G&quot;…
+## $ TEST  &lt;chr&gt; &quot;ADD&quot;, &quot;COV1&quot;, &quot;COV2&quot;, &quot;COV3&quot;, &quot;COV4&quot;, &quot;COV5&quot;, &quot;ADD&quot;, &quot;COV1&quot;, &quot;…
+## $ NMISS &lt;dbl&gt; 339, 339, 339, 339, 339, 339, 341, 341, 341, 341, 341, 341, 341…
+## $ OR    &lt;dbl&gt; 1.474000, 0.417400, 0.005308, 1.820000, 0.446000, 2.712000, 1.4…
+## $ STAT  &lt;dbl&gt; 1.75600, -0.42040, -2.46500, 0.29290, -0.39620, 0.49010, 1.4240…
+## $ P     &lt;dbl&gt; 0.07913, 0.67420, 0.01369, 0.76960, 0.69200, 0.62410, 0.15440, …
+## $ X10   &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</code></pre>
+<p>As you can see, this is a very big data-set where we have almost 1.5 million observations and 10 variables:</p>
+<ul>
+<li>CHR = Chromosome</li>
+<li>SNP = Single-nucleotide polymorphism</li>
+<li>BP = Base-pair coordinate</li>
+<li>A1 = Allele 1</li>
+<li>TEST = Test identifier</li>
+<li>NMISS = Number of observations (non-missing genotype, phenotype, and covariates)</li>
+<li>OD = odds(allele 1 | case) / odds(allele 1 | control)</li>
+<li>STAT = T-statistic</li>
+<li>P = Asymptotic p-value for t-statistic</li>
+</ul>
+<p>Now lets do some data cleaning to transform some variables to factor and remove the last column that does not mean anything. We are also filtering the data only for <code>TEST = ADD</code> to only plot the data points corresponding to SNP effect:</p>
+<pre class="r"><code>df_clean &lt;- plink.result %&gt;% 
+  filter(TEST == &quot;ADD&quot;) %&gt;% 
+  select(-X10) #  Remove all rows that don’t correspond to testing the SNP effect 
+
+fac &lt;- c(&quot;CHR&quot;,&quot;SNP&quot;, &quot;A1&quot;, &quot;TEST&quot;) # select columns to be factor
+
+df_clean[fac] &lt;- lapply(df_clean[fac], factor) # transform columns to factor
+
+glimpse(df_clean) # check new data stucture</code></pre>
+<pre><code>## Rows: 246,663
+## Columns: 9
+## $ CHR   &lt;fct&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …
+## $ SNP   &lt;fct&gt; rs3094315, rs4040617, rs4075116, rs6603781, rs3766180, rs660379…
+## $ BP    &lt;dbl&gt; 792429, 819185, 1043552, 1198554, 1563420, 1586208, 1596068, 16…
+## $ A1    &lt;fct&gt; C, G, G, T, G, G, A, T, C, G, C, A, A, A, A, A, A, C, C, A, A, …
+## $ TEST  &lt;fct&gt; ADD, ADD, ADD, ADD, ADD, ADD, ADD, ADD, ADD, ADD, ADD, ADD, ADD…
+## $ NMISS &lt;dbl&gt; 339, 341, 341, 336, 342, 341, 341, 338, 342, 342, 328, 342, 342…
+## $ OR    &lt;dbl&gt; 1.4740, 1.4160, 0.9771, 1.4910, 0.8282, 0.8004, 0.8130, 0.7624,…
+## $ STAT  &lt;dbl&gt; 1.756000, 1.424000, -0.139800, 1.755000, -1.098000, -1.321000, …
+## $ P     &lt;dbl&gt; 0.07913, 0.15440, 0.88880, 0.07933, 0.27230, 0.18660, 0.22470, …</code></pre>
+<p>Now we have a smaller (still big) data-set with almost 250,000 observations and we can go forward and create our Manhattan plot.</p>
+</div>
+<div id="manhattan-plot" class="section level3">
+<h3>Manhattan plot</h3>
+<p>To create the Manhattan plot, I will create a function that takes two arguments (df = dataframe and threshold of SNP significance) was created following three steps:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Compute the cumulative position of SNP (BPcum)</strong> and add it to the data set. This was done by grouping the filtered data by chromosome and summarizing the Max BP for each chromosome. After that, using mutate I calculated total length by subtracting the cumulative chromosome length by the chromosome length and them use left join to add this into the data. A final step was arranging by chromosome and base pairs and create another column named BPcum to get the cumulative position of SNPs.</p></li>
+<li><p>The second step was to <strong>prepare the x-axis to be used in the plot</strong>. By centering each chromosome to the middle point of the BPcum.</p></li>
+<li><p>The final step is to <strong>create the plot</strong>. To do this I used ggplot where I specify the x as BPcum and y as the -log10 of the P-values. After that, I created a <code>geom_point</code> layer by mapping color to Chromosome; color was defined by using the <code>scale_color_manual</code> function where each chromosome was map in two colors. To use the previous created x-axis we defined it using the function <code>scale_x_continuous</code>. Other aesthetic values were defined using the <code>theme</code> function and <code>geom_rapel</code> from the package <code>ggrapel</code> was used to annotate the significant SNPs with another <code>geom_point</code> function to highlight those points as well. Dashed line represent the defined threshold.</p></li>
+</ol>
+<p>Lets implement our plot function:</p>
+<pre class="r"><code>manh_plot &lt;- function(df, threshold) {
+  
+  ### 1. Compute the cumulative position of SNP ### 
+  plot_data &lt;- df %&gt;%   
+  # Compute chromosome size
+  group_by(CHR) %&gt;% 
+  summarise(chr_len=as.numeric(max(BP))) %&gt;% 
+  # Calculate cumulative position of each chromosome
+  mutate(tot=cumsum(chr_len)-chr_len) %&gt;%
+  select(-chr_len) %&gt;%
+  # Add this info to the initial dataset
+  left_join(df_clean, ., by=c(&quot;CHR&quot;=&quot;CHR&quot;)) %&gt;%
+  # Add a cumulative position of each SNP
+  arrange(CHR, BP) %&gt;%
+  mutate( BPcum=as.numeric(BP+tot))
+  
+  ### 2. Generate x-axis ###
+  axisdf &lt;- plot_data %&gt;% 
+  group_by(CHR) %&gt;% 
+  summarize(center=(max(BPcum) + min(BPcum)) / 2 )
+  
+  ### 3. create plot ###
+  plot &lt;- ggplot(plot_data, aes(x=BPcum, y=-log10(P))) + 
+  #specify the y and x values
+  geom_point( aes(color=as.factor(CHR)), alpha=0.8, size=1.3) + 
+  # create scatterplot colored by chromosome
+  scale_color_manual(values = rep(c(&quot;#E2709A&quot;, &quot;#CB4577&quot;, 
+                                    &quot;#BD215B&quot;, &quot;#970F42&quot;, 
+                                    &quot;#75002B&quot;), 22)) + 
+  # set a colour pattern 
+  scale_x_continuous(label = axisdf$CHR, breaks= axisdf$center) + 
+  # scale the x-axis
+  scale_y_continuous(expand = c(0, 0)) + 
+  # remove space between plot area and x axis
+  ylim(0,20) +
+  theme_light() +
+  theme(legend.position=&quot;none&quot;,
+        panel.border = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        axis.line = element_line(color = &quot;black&quot;)) +
+  xlab(&quot;Chromosome&quot;) + 
+  # add x label
+  geom_label_repel( data=plot_data %&gt;% filter(P &lt; threshold), # add annotation value
+                    aes(label=SNP), size=3) + # add annotation
+    geom_point(data= plot_data %&gt;% filter(P &lt; threshold), # add annotation value
+               color=&quot;orange&quot;, size=2) + # Add highlighted points 
+  geom_hline(yintercept = -log10(threshold), linetype=&quot;dashed&quot;) # threshold line
+
+  return(plot) # return the final plot
+}</code></pre>
+<p>Now lets run our function! For our function we will set our threshold for SNP negative log p-value significance of <span class="math inline">\(10^{-10}\)</span>. This value is defined by you based on your data.</p>
+<pre class="r"><code>plot &lt;- manh_plot(df_clean, threshold = 10^-10) # run function
+plot</code></pre>
+<p><img src="/post/GWAS_data_visualization_files/figure-html/run%20function-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Great! It works looks like we have two major SNPs in our dataset. It seems that those SNPs are located in the chromossome 19. Lets take a look by zooming on it using the ggplot function <code>coord_cartesian()</code>.</p>
+<p>However, before doing it we need to identify the coordinates limits of each chromosome in the our genomic data. To do that lets use some tidyverse functions such as <code>group by</code> and summarize:</p>
+<pre class="r"><code># Identify max and min values for BPcum ##
+kable(df_clean %&gt;%
+  # Compute chromosome size
+  group_by(CHR) %&gt;% 
+  summarise(chr_len=as.numeric(max(BP))) %&gt;% 
+  # Calculate cumulative position of each chromosome
+  mutate(tot=cumsum(chr_len)-chr_len) %&gt;%
+  select(-chr_len) %&gt;%
+  # Add this info to the initial dataset
+  left_join(df_clean, ., by=c(&quot;CHR&quot;=&quot;CHR&quot;)) %&gt;%
+  # Add a cumulative position of each SNP
+  arrange(CHR, BP) %&gt;%
+  mutate( BPcum=as.numeric(BP+tot)) %&gt;% 
+  group_by(CHR) %&gt;% 
+  summarize(`Upper limit` = max(BPcum),
+            `Lower limit` = min(BPcum))) %&gt;%
+  kable_styling()</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+CHR
+</th>
+<th style="text-align:right;">
+Upper limit
+</th>
+<th style="text-align:right;">
+Lower limit
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:right;">
+245330435
+</td>
+<td style="text-align:right;">
+792429
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:right;">
+488060817
+</td>
+<td style="text-align:right;">
+245421949
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:right;">
+687382885
+</td>
+<td style="text-align:right;">
+488109420
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:right;">
+878688928
+</td>
+<td style="text-align:right;">
+687452420
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:right;">
+1059314367
+</td>
+<td style="text-align:right;">
+878770877
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+6
+</td>
+<td style="text-align:right;">
+1230137976
+</td>
+<td style="text-align:right;">
+1059424999
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7
+</td>
+<td style="text-align:right;">
+1388743029
+</td>
+<td style="text-align:right;">
+1230279298
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+8
+</td>
+<td style="text-align:right;">
+1535007247
+</td>
+<td style="text-align:right;">
+1388932576
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+9
+</td>
+<td style="text-align:right;">
+1673311023
+</td>
+<td style="text-align:right;">
+1535189376
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+10
+</td>
+<td style="text-align:right;">
+1808634455
+</td>
+<td style="text-align:right;">
+1673459969
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+11
+</td>
+<td style="text-align:right;">
+1943078135
+</td>
+<td style="text-align:right;">
+1808831222
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+12
+</td>
+<td style="text-align:right;">
+2075451837
+</td>
+<td style="text-align:right;">
+1943140015
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+13
+</td>
+<td style="text-align:right;">
+2189515198
+</td>
+<td style="text-align:right;">
+2093562099
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+14
+</td>
+<td style="text-align:right;">
+2295868223
+</td>
+<td style="text-align:right;">
+2208917893
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+15
+</td>
+<td style="text-align:right;">
+2396055457
+</td>
+<td style="text-align:right;">
+2314314645
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+16
+</td>
+<td style="text-align:right;">
+2484724313
+</td>
+<td style="text-align:right;">
+2396138960
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+17
+</td>
+<td style="text-align:right;">
+2563329787
+</td>
+<td style="text-align:right;">
+2484731201
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+18
+</td>
+<td style="text-align:right;">
+2639445341
+</td>
+<td style="text-align:right;">
+2563480674
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+19
+</td>
+<td style="text-align:right;">
+2703230392
+</td>
+<td style="text-align:right;">
+2639657374
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+20
+</td>
+<td style="text-align:right;">
+2765607350
+</td>
+<td style="text-align:right;">
+2703316517
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+21
+</td>
+<td style="text-align:right;">
+2812509590
+</td>
+<td style="text-align:right;">
+2779179019
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+22
+</td>
+<td style="text-align:right;">
+2861956667
+</td>
+<td style="text-align:right;">
+2827773044
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+23
+</td>
+<td style="text-align:right;">
+3016436346
+</td>
+<td style="text-align:right;">
+2864653419
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+25
+</td>
+<td style="text-align:right;">
+3019123947
+</td>
+<td style="text-align:right;">
+3016531021
+</td>
+</tr>
+</tbody>
+</table>
+<p>It seems that our chromosome is on the 2639657374 and 2703230392 limit lets plot it!</p>
+<pre class="r"><code>## plot only chromossome 19 according to the above values
+plot +
+  coord_cartesian(xlim = c(2639657374, 2703230392))</code></pre>
+<p><img src="/post/GWAS_data_visualization_files/figure-html/plot%20chromosome%2019-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<p>With this codes you can create your own (and customizable) Manhattan plot! That are many other analysis that you can do in a GWAS studies; it is a vast and amazing research approach that weed scientist can (and should) use!</p>
+</div>

@@ -1,0 +1,351 @@
+---
+title: "One-way ANOVA for percentage weed control data"
+author: 
+- Maxwel C Oliveira
+- Rodrigo Werle
+date: 2019-12-20T21:13:14-05:00
+lastmod: '2021-02-14T16:51:54-03:00'
+categories: ["Data Analysis"]
+tags: ["anova", "plot", "weed control"]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE)
+```
+
+```{r include=FALSE}
+library(tidyverse)
+library(glmmTMB)
+library(lme4)
+library(lmerTest)
+library(emmeans)
+library(RCurl)
+library(kableExtra)
+library(car)
+```
+
+# Background
+
+Assessments of visual weed control in response to herbicide treatments is likely the most common experiment and data analysis conducted within the Weed Science discipline. The goal of these experiments is to investigate herbicides that promote the best level of control of targeted weed species. These experiments are usually organized in a one-way randomized complete block design with multiple treatments (herbicides). At a pre-established  number of days after treatment (DAT; researcher choice), a percent (%) visual control rate is given to each targeted weed. The weed control rate varies from 0% (no weed control) to 100% (complete weed control). Therefore, before setting up the experiments, the researcher is aware that the results will range from 0 to 100%. 
+
+This type of dataset typically does not follow a normal (Gaussian) distribution. Herein we use the *beta distribution* (logit scale), a continuous probability distribution where response variable values range from 0 to 1. Before starting the analysis, the weed control rates (0-100%) should be converted to the interval 0-1. For example, if the weed control of Palmer amaranth is 90%, it should be listed as 0.900 in your excel spreadsheet file. Also, *beta distribution* will not accept 0 nor 1 values. Thus, weed control of 0% and 100% should be adjusted to 0.001 and 0.999, respectively.
+ 
+
+# Getting started
+
+- Download **R** for your laptop system/desktop from: https://www.r-project.org
+
+**R** is a programming language and free software environment for statistical computing and graphics supported by the R Foundation for Statistical Computing.
+
+- Download **RStudio** for your laptop system/desktop from: https://rstudio.com
+
+**RStudio** is an integrated development environment for R, a programming language for statistical computing and graphics.
+
+
+# Create a new R project file
+
+- Click in File -> New project... -> New directory -> New Project -> Save the R work directory anywhere you want in your laptop. 
+
+The saved file will have an R project and you should copy and paste all your raw data (excel file) in the same work directory (folder).
+
+- Click in File -> New File -> R script (.R)
+
+or
+
+- Click in File -> New File -> R markdown... (.Rmd)
+
+
+Although I like working within R markdown, R script is easier to work with in R studio. 
+
+
+# Install packages
+
+In order to accomplish this exercise, you will need to install the following R packages:
+
+
+```yaml
+install.packages(tidyverse)
+install.packages(glmmTMB)
+install.packages(lme4)
+install.packages(lmerTest)
+install.packages(emmeans)
+install.packages(RCurl)
+install.packages(car)
+install.packages(kableExtra)
+```
+
+Run all codes above by clicking in the "Run" option in the top right corner of you R script or R markdown. These codes will install the necessary packages for analyzing weed control (%) experiments. Once you install these packages you will not need to install them again, unless you update R and/or RStudio.
+
+
+# Data
+
+- Run the package below
+
+```yaml
+library(tidyverse)
+library(RCurl)
+```
+
+The data used for this exercise is from a published [manuscript](https://www.doi.org/10.1017/wet.2016.4) by Oliveira et al. 2017 investigating control of a waterhemp (*Amaranthus tuberculatus*) population with several  with several postemergence herbicides. For this exercise, herbicides are named A, B, C, D, and E. In addition, only results from year 2014 is presented. Run the following codes to load the data into R: 
+
+
+```{r}
+df_path <- getURL("https://raw.githubusercontent.com/openweedsci/data/master/posts/control.csv")
+
+weedcont <- read_csv(df_path)
+```
+
+
+After running the codes above, the data should appear as *weedcont* (“control” was chosen as the name of the dataset; you could have called it “data” or something else).
+
+
+```{r}
+weedcont
+```
+
+
+The dataset contains 2 years (2013 and 2014), 5 herbicides (A, B, C, D, E), 3 reps (1, 2  and 3), and visual control of waterhemp (converted to proportions [0.001-0.999] already).
+
+
+# Levene's Test for Homogeneity of Variance
+
+- Run the packages below
+
+```yaml
+library(car)
+```
+
+Levene's Test of the null that the variances amongst herbicide treatments are the same.
+
+- Levene’s test is robust to departures from normality.
+
+> leveneTest function
+
+```{r warning=FALSE}
+leveneTest(weedcont$control,  weedcont$herbicide)
+```
+
+
+Results show p-value = 0.6197 thus the null hypothesis is accepted indicating that variances amongst herbicide treatments are the same.
+
+
+# Model
+
+- Run the packages below
+
+```yaml
+library(glmmTMB)
+library(lme4)
+library(lmerTest)
+```
+
+- Generalized Linear Mixed Models using Template Model Builder by Mollie Brooks
+
+- Beta family with logit
+
+- Mixed model
+
+The model has control as a response variable, herbicide as fixed effects, and rep as random effects.
+
+> glmmTMB function
+
+```{r}
+model <- glmmTMB(control ~ herbicide + (1|rep), beta_family(link = "logit"), data=weedcont)
+```
+
+
+#  Anova
+
+> *Anova.glmmTMB* function
+
+```{r}
+glmmTMB:::Anova.glmmTMB(model)
+```
+
+The *P*-value < 2.2e-16; there is a lower evidence that a difference of some magnitude between herbicides tested could occur by chance alone assuming null hypothesis is true.
+
+
+
+# Cheking the herbicide control on waterhemp 
+
+- Run the package below
+
+```yaml
+library(emmeans)
+```
+
+
+## Interaction-style plots for estimated marginal means (emmip)
+
+- type="response", herbicide and intervals back from the logit scale
+
+- coord_flip(), inverted the axis (better visualization)
+
+> *emmip* function
+
+```{r}
+emmip(model, ~herbicide, type="response") 
+```
+
+
+This figure helps visualize waterhemp control given herbicide treatments. It is useful in treatments arranged in factorial design.
+
+## Estimated marginal means (least-squares means)
+
+- type="response", herbicide and intervals backtransformed from the logit scale
+
+- cont="pairwise", comparisons between each herbicide treatments
+
+- adjust="none", fisher's least significant difference (try tukey)
+
+The lsmeans provides the weed control (prop), SE (standard error) and confidence intervals (lower.CL and upper.CL). Moreover, lsmeans provides the pairwise contrasts between treatments (herbicides).
+
+> *emmeans* function
+
+```{r}
+lsmeans <- emmeans(model, ~ herbicide, cont="pairwise", adjust="none", type="response", alpha=0.05)
+
+lsmeans
+```
+
+
+## Plot lsmeans
+
+- comparisons=TRUE, comparisons between treatments with red arrows
+
+- type="response", herbicide and intervals backtransformed from the logit scale
+
+- alpha=0.05, significance level to use in constructing comparison arrows
+
+- adjust="none", Fisher's least significant difference (try tukey)
+
+> *plot* function
+
+```{r}
+plot(lsmeans$emmeans, ~ herbicide, comparisons=TRUE, type="response", alpha=0.05, adjust="none")
+```
+
+
+The black dot represents the mean waterhemp control whereas the purple represents the confidence intervals for each herbicide. Red arrows indicate the comparison across herbicide treatments, whereas if red arrows do not overlap, treatments are different. See contrasts from lsmeans for validation. 
+
+
+# Extract and dsplay information on all pairwise comparisons of estimated marginal means
+
+- alpha=0.05, numeric value giving the significance level for the comparisons
+
+- Letters=letters, display letter grouping treatments according to pairwise comparisons
+
+- adjust="none", fisher's least significant difference (try tukey)
+
+- reversed = TRUE, the order of use of the letters is reversed
+
+> *CLD* function
+
+```
+cld <-CLD(lsmeans$emmeans, alpha=0.05, Letters=letters, adjust="none", reversed = TRUE)
+cld 
+```
+
+## Warning
+```toml
+"The CLD function and methods are deprecated. Compact-letter displays (CLDs) encourage a misleading interpretation of significance testing by visually grouping means whose comparisons have P > alpha as though they are equal. However, failing to prove two means are different does not prove that they are the same. In addition, CLDs make a hard distinction between P values nearly equal to alpha but on opposite sides."
+```
+
+- Some people have told me about *CLD* not working anymore. A solution is to use the *cld* function of **multcomp** package.
+
+
+
+```{r}
+library(multcomp)
+cld <- cld(lsmeans$emmeans, alpha=0.05, Letters=letters, adjust="none", reversed = TRUE)
+cld
+```
+
+
+
+
+
+# Figure 
+
+## Dot plot with confidence intervals 
+
+Since *CLD* function is deprecated, I recommend using the lsmeans to generate figures.
+
+```{r}
+nd <- as.data.frame(lsmeans$emmeans)
+```
+
+Use *nd* to plot a figure.
+
+> ggplot function
+
+
+
+```{r}
+ggplot(nd, aes(x=reorder(herbicide,response), y=response*100, color=herbicide)) + 
+geom_point(size=4) + ylim(0,100) +
+scale_color_manual(values=c("red", "blue", "green", "orange", "purple")) +
+theme_bw() + labs(y="Waterhemp control (%)", x="Herbicides") +
+geom_linerange(aes(ymin = lower.CL*100, ymax = upper.CL*100), size=1.5) + 
+theme(axis.title = element_text(size=16),
+axis.text = element_text(size=15),
+legend.position = "none") +
+coord_flip()
+```
+
+The mean and confidence intervals of each herbicide are displayed in the*ggplot* figure.
+
+> Figure updated to follow a suggestion by [Dr. Andrew Kniss](https://twitter.com/WyoWeeds) (see comments).
+
+## Bar plot with letters
+
+
+If you like presenting barplots with letters. Here is how you should proceed:
+
+```{r warning=FALSE}
+ggplot(cld, aes(x=herbicide, y=response*100, fill=herbicide, label=.group)) + 
+  geom_bar(stat="identity") + ylim(0,105) +
+  scale_fill_manual(values=c("red", "blue", "green", "orange", "purple")) +
+  theme_bw() +  labs(y="Waterhemp control (%)", x="Herbicides") +
+  geom_text(nudge_y = 7, size=8) + 
+  theme(axis.title = element_text(size=16),
+        axis.text = element_text(size=15),
+        legend.position = "none") 
+```
+
+## Table
+
+- Run the package below
+
+```yaml
+library(kableExtra)
+```
+
+This is a very simple table generator.
+
+> *kable* function
+
+```{r}
+kable(nd)
+```
+
+
+
+# Summary
+
+- The weed control (%) data must be between 0 and 1 
+
+- Use Levene's test for checking homogeneity of variances 
+
+- Use *glmmTMB* function in the model
+
+- Use beta family with logit in the model
+
+- Use *Anova* or *Anova.glmmTMB* function for checking the ANOVA
+
+- Use *emmeans* function to estimated the marginal means and contrasts
+
+- Similar approach is recommended with % biomass reduction or % cover datasets

@@ -16,13 +16,14 @@ title: Open Weed Science
 
 | Member                | Role       | Domain(s)                       | Institute                       | Country | Contact               |
 |-----------------------|------------|---------------------------------|---------------------------------|---------|-----------------------|
-| Maxwel C Oliveira     | Leadership | Modeling                        | Western São Paulo University and University of Wisconsin-Madison | BRA-USA     | maxoliveira@wisc.edu  |
+| Maxwel C Oliveira     | Leadership | Modeling                        | University of Wisconsin-Madison | BRA-USA     | maxoliveira@wisc.edu  |
 | Brendan C S Alexander | Member     | Modeling, Applied Statistics    | University of Illinois-UC       | USA     | bca2@illinois.edu     |
 | Ethann R Barnes       | Member     | Modeling                        | GreenLight Biosciences, Inc.    | USA     |                       |
 | Lucas K Bobadilla     | Member     | Bioinformatics                  | University of Illinois-UC       | USA     | lucask3@illinois.edu  |
 | O Adewale Ospitan     | Member     | Meta-analysis                   | University of California-Davis  | USA     | oosipitan@ucdavis.edu |
 | Rodrigo Werle         | Member     | Modeling, Weed Management       | University of Wisconsin-Madison | USA     | rwerle@wisc.edu       |
 | Sarah M Matos Marinho     | Member     | Text Analysis | Fundação Getulio Vargas-CEPESP São Paulo  | Brazil     | sarah.momm@gmail.com   |
+| Sarah Striegel     | Member     | Machine learning | University of Wisconsin-Madison  | USA     | sstriegel@wisc.edu   |
 | Stevan Z Knezevic     | Member     | Dose-response, Weed Competition | University of Nebraska-Lincoln  | USA     | sknezevic2@unl.edu    |
 | Zahoor Ganie     | Member     | Modeling | FMC Corporation  | USA     | zahoor.ganie@fmc.com    |
 
