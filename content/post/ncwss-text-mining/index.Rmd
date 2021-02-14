@@ -6,6 +6,7 @@ date: 2021-02-13T21:09:14-05:00
 categories: ["Text Analysis"]
 tags: ["data analysis"]
 output: html_document
+thumbnail: http://ncwss.org/wp-content/uploads/2015/03/ncwss-map1.jpg
 --- 
 
 
@@ -266,7 +267,6 @@ Check the figure carefully. What were you doing in 2001? What do you think have 
 
 This figure was adapted from one of [JaredBraggins](https://twitter.com/JaredBraggins) Tidy Tuesday visualizations. 
 
-This post will be available soon at the [Open Weed Science](https://www.openweedsci.org/).
 
 ---
 
