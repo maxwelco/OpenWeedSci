@@ -1,2 +1,2 @@
 # OpenWeedSci
-web
+Open Weed Science website
