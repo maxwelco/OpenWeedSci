@@ -6,11 +6,7 @@
     <description>Recent content in Bioinformatics on Welcome to Open Weed Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 18 Mar 2020 21:13:14 -0500</lastBuildDate>
-    
-	<atom:link href="/categories/bioinformatics/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Wed, 18 Mar 2020 21:13:14 -0500</lastBuildDate><atom:link href="/categories/bioinformatics/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>GWAS data visualization in R</title>
       <link>/post/2020/03/18/gwas-data-visualization-in-r/</link>

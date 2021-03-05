@@ -6,10 +6,15 @@
     <description>Recent content in Text Analysis on Welcome to Open Weed Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 25 Feb 2020 21:13:14 -0500</lastBuildDate>
-    
-	<atom:link href="/categories/text-analysis/index.xml" rel="self" type="application/rss+xml" />
-    
+    <lastBuildDate>Sat, 13 Feb 2021 20:09:14 -0500</lastBuildDate><atom:link href="/categories/text-analysis/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>North Central Weed Science Society meeting proceedings, an overview of the XXI century using text analysis</title>
+      <link>/post/2021/02/13/north-central-weed-science-society-meeting-proceedings-an-overview-of-the-xxi-century-using-text-analysis/</link>
+      <pubDate>Sat, 13 Feb 2021 20:09:14 -0500</pubDate>
+      
+      <guid>/post/2021/02/13/north-central-weed-science-society-meeting-proceedings-an-overview-of-the-xxi-century-using-text-analysis/</guid>
+      <description>This text analysis is part of my poster (co-authored with Rodrigo Werle and Sarah Marinho) presented at the 2020 Virtual North Central Weed Science Society NCWSS annual meeting (December 2020). Here I am presenting part of that abstract focused on weed species ranked amongst the top 100 words from 2001 through 2020 (I am adding the 2020 meeting proceedings to this analysis). I am also running the text analysis with less coding than for the 2020 NCWSS meeting which is what I am going to show in this analysis.</description>
+    </item>
     
     <item>
       <title>2020 WSSA/WSWS meeting program text analysis</title>

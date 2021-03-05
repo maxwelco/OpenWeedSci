@@ -1,163 +1,111 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
   <url>
     <loc>/categories/</loc>
-    <lastmod>2020-08-20T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/categories/data-analysis/</loc>
-    <lastmod>2020-08-20T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
+    <lastmod>2021-03-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>/tags/data-analysis/</loc>
+    <lastmod>2021-03-04T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>/post/</loc>
+    <lastmod>2021-03-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>/tags/</loc>
+    <lastmod>2021-03-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>/categories/web-scraping/</loc>
+    <lastmod>2021-03-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>/post/2021/03/04/eea/</loc>
+    <lastmod>2021-03-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>/</loc>
+    <lastmod>2021-03-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>/post/2021/02/13/north-central-weed-science-society-meeting-proceedings-an-overview-of-the-xxi-century-using-text-analysis/</loc>
+    <lastmod>2021-02-13T20:09:14-05:00</lastmod>
+  </url><url>
+    <loc>/categories/text-analysis/</loc>
+    <lastmod>2021-02-13T20:09:14-05:00</lastmod>
+  </url><url>
+    <loc>/categories/data-analysis/</loc>
+    <lastmod>2021-02-14T16:51:54-03:00</lastmod>
+  </url><url>
+    <loc>/tags/machine-learning/</loc>
     <lastmod>2020-08-20T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/random-forest/</loc>
     <lastmod>2020-08-20T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/post/2020/08/20/random-forest-a-machine-learning-algorithm-for-weed-research/</loc>
     <lastmod>2020-08-20T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/</loc>
-    <lastmod>2020-08-20T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/variable-importance/</loc>
-    <lastmod>2020-08-20T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/</loc>
-    <lastmod>2020-08-20T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/categories/bioinformatics/</loc>
     <lastmod>2020-03-18T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/genomics/</loc>
     <lastmod>2020-03-18T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/post/2020/03/18/gwas-data-visualization-in-r/</loc>
     <lastmod>2020-03-18T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/post/2020/02/25/2020-wssa/wsws-meeting-program-text-analysis/</loc>
     <lastmod>2020-02-25T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/categories/text-analysis/</loc>
-    <lastmod>2020-02-25T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/text-mining/</loc>
     <lastmod>2020-02-25T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/word-cloud/</loc>
     <lastmod>2020-02-25T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/power/</loc>
     <lastmod>2020-02-10T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/post/2020/02/10/simulating-power/</loc>
     <lastmod>2020-02-10T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/categories/statistics/</loc>
     <lastmod>2020-02-10T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/anova/</loc>
-    <lastmod>2019-12-20T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
+    <lastmod>2021-02-14T16:51:54-03:00</lastmod>
+  </url><url>
     <loc>/post/2019/12/20/one-way-anova-for-percentage-weed-control-data/</loc>
-    <lastmod>2019-12-20T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
+    <lastmod>2021-02-14T16:51:54-03:00</lastmod>
+  </url><url>
     <loc>/tags/plot/</loc>
-    <lastmod>2019-12-20T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
+    <lastmod>2021-02-14T16:51:54-03:00</lastmod>
+  </url><url>
     <loc>/tags/weed-control/</loc>
-    <lastmod>2019-12-20T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
+    <lastmod>2021-02-14T16:51:54-03:00</lastmod>
+  </url><url>
     <loc>/post/2019/12/13/crop-weed-competition-in-additive-design/</loc>
     <lastmod>2019-12-13T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/regression/</loc>
     <lastmod>2019-12-13T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/weed-competition/</loc>
     <lastmod>2019-12-13T21:13:14-05:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/markdown/</loc>
     <lastmod>2019-12-11T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/rstudio/</loc>
     <lastmod>2019-12-11T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/tags/talk/</loc>
     <lastmod>2019-12-11T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/categories/talks-workshops/</loc>
     <lastmod>2019-12-11T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/post/2019/12/11/using-rstudio-for-visualization-and-analysis-of-weed-science/</loc>
     <lastmod>2019-12-11T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/contribute/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>/about/</loc>
   </url>
-  
 </urlset>

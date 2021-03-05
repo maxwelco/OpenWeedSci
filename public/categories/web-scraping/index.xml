@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Web scraping on Welcome to Open Weed Science</title>
+    <link>/categories/web-scraping/</link>
+    <description>Recent content in Web scraping on Welcome to Open Weed Science</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 04 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="/categories/web-scraping/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Web scraping herbicide resistant data</title>
+      <link>/post/2021/03/04/eea/</link>
+      <pubDate>Thu, 04 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/2021/03/04/eea/</guid>
+      <description>Web scraping Web scraping, web harvesting, or web data extraction is data scraping used for extracting data from websites. Web pages use HyperText Markup Language (HTML). HTML isn’t a programming language like R. However, it’s a markup language with its own syntax and rules. In addition, Cascading Style Sheets, or CSS, is a language for adding styles to HTML pages.
+This post will lead you to get an structured data of herbicide weed resistance by country from the http://weedscience.</description>
+    </item>
+    
+  </channel>
+</rss>

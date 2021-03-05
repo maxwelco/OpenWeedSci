@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Web scrape on Welcome to Open Weed Science</title>
+    <link>/categories/web-scrape/</link>
+    <description>Recent content in Web scrape on Welcome to Open Weed Science</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 04 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="/categories/web-scrape/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Web scraping herbicide resistant data</title>
+      <link>/post/2021/03/04/eea/</link>
+      <pubDate>Thu, 04 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/2021/03/04/eea/</guid>
+      <description>It is not novel that herbicide resistance is a major problem worldwide. If you are a student, Professor, extension or industry personnel in the field of Weed Science, you have probably landed in the The International Herbicide-Resistant Weed Database (http://weedscience.org/Home.aspx), which is leaded by Dr. Ian Heap. If you are a novice in Weed Science, here is the website description:
+ The International Survey of Herbicide Resistant Weeds is a collaborative effort between weed scientists in over 80 countries.</description>
+    </item>
+    
+  </channel>
+</rss>

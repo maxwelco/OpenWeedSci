@@ -1,0 +1,296 @@
+---
+title: "Web scraping herbicide weed resistance data"
+author: 
+- Maxwel C Oliveira
+- Nick Arneson
+date: 2021-03-05T20:09:14-05:00
+categories: ["Web scraping"]
+tags: ["data manipulation"]
+output: html_document
+thumbnail: http://weedscience.org/Images/1.jpg
+--- 
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+
+<div id="web-scraping" class="section level2">
+<h2>Web scraping</h2>
+<p>Web scraping, web harvesting, or web data extraction is data scraping used for extracting data from websites. Web pages use HyperText Markup Language (<strong>HTML</strong>). HTML isn’t a programming language like R. However, it’s a markup language with its own syntax and rules. In addition, Cascading Style Sheets, or <strong>CSS</strong>, is a language for adding styles to HTML pages.</p>
+<p><img src="https://static.javatpoint.com/python/images/web-scraping-using-python.png" /></p>
+<p>This post will lead you to get an structured data of herbicide weed resistance by country from the <a href="http://weedscience.org/Home.aspx" class="uri">http://weedscience.org/Home.aspx</a> website. We are not gonna teach you about the full details of web scraping. Rather we are using some of web scraping techniques in R to get herbicide resistance data.</p>
+<p>If you want to learn more details about web scraping in R, please read <a href="https://www.dataquest.io/blog/web-scraping-in-r-rvest/">here</a></p>
+</div>
+<div id="herbicide-resistance" class="section level2">
+<h2>Herbicide resistance</h2>
+<p>It is not novel that herbicide resistance is a major problem worldwide. If you are a student, Professor, extension or industry personnel in the field of Weed Science, you have probably landed in the <strong>The International Herbicide-Resistant Weed Database</strong> (<a href="http://weedscience.org/Home.aspx" class="uri">http://weedscience.org/Home.aspx</a>), which is leaded by Dr. Ian Heap.</p>
+<center>
+<iframe width="800px" height="400px" src="http://weedscience.org/Home.aspx">
+<p>
+Your browser does not support iframes
+</p>
+</iframe>
+</center>
+<p>If you are a novice in Weed Science, here is the website description:</p>
+<blockquote>
+<p>The International Survey of Herbicide Resistant Weeds is a collaborative effort between weed scientists in over 80 countries. Our main aim is to maintain scientific accuracy in the reporting of herbicide resistant weeds globally. This collaborative effort is supported by government, academic, and industry weed scientists worldwide. This project is funded by the Global Herbicide Resistance Action Committee and CropLife International.</p>
+</blockquote>
+<p>The <a href="http://weedscience.org/Home.aspx">website</a> is the best resource for retrieving herbicide weed resistance data. There are many ways you can get data from this herbicide resistance database. One common method is to copy and paste data from the region or weed of iquiry into a spreadsheet or a text file to summarize. However, as you know, we are vested in making your life easier when it comes to weed science data analysis. So in this post we will show you how to extract the data and direct it into R.</p>
+</div>
+<div id="packages" class="section level2">
+<h2>Packages</h2>
+<p>For this exercise the main packages used are <strong>rvest</strong> for scraping websites and <strong>tidyverse</strong> for data manipulation. Let’s start by running the codes below.</p>
+<pre class="r"><code>#install.packages(&quot;rvest&quot;) #Remove # if you need to install these packages
+#install.packages(&quot;tidyverse&quot;)
+library(rvest)
+library(tidyverse)</code></pre>
+</div>
+<div id="scraping-herbicide-resistance-weeds-by-county-and-site-of-action" class="section level2">
+<h2>Scraping herbicide resistance weeds by county and site of action</h2>
+<p>Once you have loaded the package in R we will start retrieving the herbicide resistance weeds by county and site of action. The data we needed can be found in the link below (yellow table):</p>
+<center>
+<iframe width="800px" height="400px" src="http://weedscience.org/Summary/CountrySummary.aspx">
+<p>
+Your browser does not support iframes
+</p>
+</iframe>
+</center>
+<p>The above shows the web page with the data we need to retrieve from this page. If you scroll down you can see that there are a list of 71 countries with number of herbicide resistance, total and resistance by sites of action (SOA). Notice that SOA are represented by Herbicide Resistance Action Committee (HRAC) <a href="https://hracglobal.com/files/HRAC_Revised_MOA_Classification_Herbicides_Poster.png">nomenclature</a>.</p>
+<p>Now we need to load the web page (<a href="http://weedscience.org/Summary/CountrySummary.aspx" class="uri">http://weedscience.org/Summary/CountrySummary.aspx</a>) in R. We will use the function <em>read_html</em>. Let’s run the code below. Notice that “world_resistance” is the name I chose to assign the webpage information.</p>
+<pre class="r"><code>world_resistance &lt;- read_html(&quot;http://weedscience.org/Summary/CountrySummary.aspx&quot;)</code></pre>
+<p>The webpage link is now stored in “world_resistance”. We will now use two functions, <em>html_node</em> and <em>html_table</em>, to extract only the Herbicide Resistance Weeds by County and Site of Action Table. The <em>html_node()</em> extract the <strong>selector</strong>, which is “table” for this webpage. Then I use <em>html_table()</em> to make the output as a table. Notice the operator <em>%&gt;%</em> is used to pass the result of one step as input for the next step.</p>
+<pre class="r"><code>resistance_chart &lt;- world_resistance %&gt;% 
+    html_node(&quot;table&quot;) %&gt;% # selector = table
+    html_table(fill = TRUE) # get a table
+
+resistance_chart %&gt;% 
+  slice_head(n = 5) # display 5 rows </code></pre>
+<pre><code>##                                                                                                                            X1
+## 1 Herbicide Resistant Weeds by Country and Site of Action(click on a column header to sort or click on a country for details)
+## 2                                                                                                                           #
+## 3                                                                                                                           1
+## 4                                                                                                                           2
+## 5                                                                                                                           3
+##          X2    X3   X4   X5   X6   X7   X8   X9  X10  X11   X12
+## 1      &lt;NA&gt;  &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;  &lt;NA&gt;
+## 2   Country Total    A    B   C1   C2    D    G   K1    O Other
+## 3 Argentina    27    3    5    0    0    0   15    0    4     0
+## 4 Australia   100   14   27    8    0   11   21    3    4    12
+## 5   Austria     5    0    2    2    1    0    0    0    0     0</code></pre>
+<p>Notice that the output of “resistance_chart” is not tidy yet (and you know we like our data tidy, don’t we!?). We will use package <strong>janitor</strong> functions <em>row_to_names()</em> and <em>clean_names()</em> to adjust the table header.</p>
+<pre class="r"><code>resistance_chart1 &lt;- resistance_chart %&gt;% 
+  janitor::row_to_names(row_number = 2) %&gt;% # make second column header
+  janitor::clean_names() %&gt;% # clean header
+  as_tibble() %&gt;% # tibble is better than data.frame 
+  mutate_at(vars(-country), as.integer) # make column numbers as integers</code></pre>
+<p>You can see that table is tidy and ready to be used as your needs (much better, yes?). If needed, an additional step is to make a single column combining all sites of action columns, here described as letters.</p>
+<pre class="r"><code>resistance_chart2 &lt;- resistance_chart1 %&gt;% 
+  pivot_longer(cols = a:other, # select columns to pivot
+               names_to = &quot;soa&quot;, # new column name
+               values_to = &quot;resistant&quot;) # new values column name
+
+resistance_chart2</code></pre>
+<pre><code>## # A tibble: 639 x 5
+##    number country   total soa   resistant
+##     &lt;int&gt; &lt;chr&gt;     &lt;int&gt; &lt;chr&gt;     &lt;int&gt;
+##  1      1 Argentina    27 a             3
+##  2      1 Argentina    27 b             5
+##  3      1 Argentina    27 c1            0
+##  4      1 Argentina    27 c2            0
+##  5      1 Argentina    27 d             0
+##  6      1 Argentina    27 g            15
+##  7      1 Argentina    27 k1            0
+##  8      1 Argentina    27 o             4
+##  9      1 Argentina    27 other         0
+## 10      2 Australia   100 a            14
+## # … with 629 more rows</code></pre>
+</div>
+<div id="scraping-herbicide-resistant-weeds-with-detail-information" class="section level2">
+<h2>Scraping herbicide resistant weeds with detail information</h2>
+<p>You might be interested in selecting herbicide resistant weeds data in a country of your choice. Here we will show how to extract herbicide resistance data from all 71 countries listed in the Heap et al. (2021) database. The gif below demonstrates the data that we are retrieving from the website.</p>
+<p><img src="scrape.gif" /></p>
+<p>I clicked on United States to show the data that we are retrieving from the website but we will get that data from all 71 countries listed.</p>
+<p>The link below show an example of the data we are are interested. Notice the website link changed a bit when we click on United States: <a href="http://weedscience.org/Summary/Country.aspx?CountryID=45" class="uri">http://weedscience.org/Summary/Country.aspx?CountryID=45</a>. If you look closely, the only thing is changing is the last attribute of the link, ID. Each country has their own code ID. The United States ID is 45.</p>
+<center>
+<iframe width="800px" height="400px" src="http://weedscience.org/Summary/Country.aspx?CountryID=45">
+<p>
+Your browser does not support iframes
+</p>
+</iframe>
+</center>
+<p>Knowing that we can extract all 71 countries’ data at once. We will use a similar code snippet, as demonstrated earlier in this post. The difference is that we are using the codes inside a function (<em>country_function</em>) that takes the country id as an argument and pass into the function body.</p>
+<pre class="r"><code>country_function &lt;- function(id) {
+  
+  url &lt;- paste0(&quot;http://weedscience.org/Summary/Country.aspx?CountryID=&quot;,id,&quot;&quot;)
+  #id will change by each country id number
+  
+  # Read url
+  resistance &lt;- read_html(url)
+  
+  # Extract herbicide resistance data
+  chart &lt;- resistance %&gt;% 
+    html_node(&quot;.rgMasterTable&quot;) %&gt;% # selector
+    html_table(fill = TRUE) # get the table
+
+  # Tidy dataset
+  final_chart &lt;- chart %&gt;% 
+    janitor::row_to_names(row_number = 2) %&gt;% # make second column header
+    janitor::clean_names() %&gt;% # clean header
+    as_tibble() %&gt;% # tibble is better than data.frame
+    drop_na() %&gt;% # drop NA values
+    mutate_at(c(&quot;number&quot;, &quot;first_year&quot;, 
+                &quot;country_id&quot;, &quot;resist_id&quot;), 
+              as.integer) # make columns numbers as integer 
+  # Get final dataset
+  final_chart 
+}</code></pre>
+<p>Now, the function is done and we want to test it. Lets use id = 1 to see the output.</p>
+<pre class="r"><code>country_function(id = 1)</code></pre>
+<pre><code>## # A tibble: 152 x 10
+##    x     number species common_name country state_name first_year country_id
+##    &lt;chr&gt;  &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt;           &lt;int&gt;      &lt;int&gt;
+##  1 &quot;&quot;         1 Lolium… Rigid Ryeg… Austra… New South…       1985          1
+##  2 &quot;&quot;         2 Avena … Sterile Oat Austra… New South…       1989          1
+##  3 &quot;&quot;         3 Avena … Wild Oat    Austra… New South…       1991          1
+##  4 &quot;&quot;         4 Cyperu… Smallflowe… Austra… New South…       1994          1
+##  5 &quot;&quot;         5 Sagitt… California… Austra… New South…       1994          1
+##  6 &quot;&quot;         6 Damaso… Starfruit   Austra… New South…       1994          1
+##  7 &quot;&quot;         7 Sisymb… Oriental M… Austra… New South…       1994          1
+##  8 &quot;&quot;         8 Sinapi… Wild Musta… Austra… New South…       1996          1
+##  9 &quot;&quot;         9 Phalar… Hood Canar… Austra… New South…       1997          1
+## 10 &quot;&quot;        10 Lolium… Rigid Ryeg… Austra… New South…       1997          1
+## # … with 142 more rows, and 2 more variables: site_of_action &lt;chr&gt;,
+## #   resist_id &lt;int&gt;</code></pre>
+<p>Great! The function works.</p>
+<p><img src="https://media.giphy.com/media/xUySTCSa4kdLTGIwN2/giphy.gif" /></p>
+<p>It gets the data from Australia, which means that the Australia ID in this website is 1. However, countries are listed alphabetically here: <a href="http://weedscience.org/Summary/CountrySummary.aspx" class="uri">http://weedscience.org/Summary/CountrySummary.aspx</a>. Therefore, I was expecting Argentina to be id = 1, not Australia.</p>
+<p>It turns out that id number is not following the alphabetical order.</p>
+<p><img src="https://media.giphy.com/media/5YoGUlh5VZGlquMzl1/giphy.gif" /></p>
+<p>Fear not, we’ve got a plan.</p>
+<p>After some workarounds I have gotten the full country name and id number.</p>
+<pre class="r"><code>country &lt;- tribble(
+~country_name, ~id,
+&quot;argentina&quot;, 48,
+&quot;australia&quot;, 1,
+&quot;austria&quot;, 2,
+&quot;belgium &quot;, 3,
+&quot;bolivia&quot;, 4,
+&quot;brazil&quot;, 5,
+&quot;bulgaria&quot;, 6,
+&quot;canada&quot;, 7,
+&quot;chile&quot;, 8,
+&quot;china&quot;, 9,
+&quot;colombia&quot;, 10,
+&quot;costa rica&quot;, 11,
+&quot;czech republic&quot;, 12,
+&quot;denmark&quot;, 13,
+&quot;ecuador&quot;, 14,
+&quot;egypt&quot;, 15,
+&quot;fiji&quot;, 16,
+&quot;france&quot;, 17,
+&quot;germany&quot;, 18,
+&quot;greece&quot;, 19,
+&quot;hungary&quot;, 20,
+&quot;india&quot;, 21,
+&quot;indonesia&quot;, 22,
+&quot;israel&quot;, 23,
+&quot;italy&quot;, 24,
+&quot;japan&quot;, 25,
+&quot;kenya&quot;, 26,
+&quot;south korea&quot;, 27,
+&quot;malaysia&quot;, 28,
+&quot;mexico&quot;, 29,
+&quot;new zealand&quot;, 30,
+&quot;norway&quot;, 31,
+&quot;philippines&quot;, 32,
+&quot;poland&quot;, 33,
+&quot;portugal&quot;, 34,
+&quot;saudi arabia&quot;, 35,
+&quot;slovenia&quot;, 36,
+&quot;south africa&quot;, 37,
+&quot;spain&quot;, 38,
+&quot;sri lanka&quot;, 39,
+&quot;sweden&quot;, 40,
+&quot;switzerland&quot;, 41,
+&quot;taiwan&quot;, 42,
+&quot;netherlands&quot;, 43,
+&quot;united kingdom&quot;, 44,
+&quot;united states&quot;, 45,
+&quot;paraguay&quot;, 46,
+&quot;thailand&quot;, 47,
+&quot;cyprus&quot;, 53,
+&quot;jordan&quot;, 55,
+&quot;nicaragua&quot;, 60,
+&quot;russia&quot;, 65,
+&quot;syria&quot;, 69,
+&quot;turkey&quot;, 71,
+&quot;uruguay&quot;, 73,
+&quot;ethiopia&quot;, 76,
+&quot;tunisia&quot;, 78,
+&quot;iran&quot;, 79,
+&quot;venezuela&quot;, 80,
+&quot;ireland&quot;, 81,
+&quot;panama&quot;, 82,
+&quot;el salvador&quot;, 83,
+&quot;guatemala&quot;, 84,
+&quot;honduras&quot;, 85,
+&quot;pakistan&quot;, 86,
+&quot;finland&quot;, 139,
+&quot;kazakhstan&quot;, 157,
+&quot;latvia&quot;, 174,
+&quot;lithuania&quot;, 185,
+&quot;serbia&quot;, 245,
+&quot;ukraine&quot;, 230
+)
+
+country</code></pre>
+<pre><code>## # A tibble: 71 x 2
+##    country_name    id
+##    &lt;chr&gt;        &lt;dbl&gt;
+##  1 &quot;argentina&quot;     48
+##  2 &quot;australia&quot;      1
+##  3 &quot;austria&quot;        2
+##  4 &quot;belgium &quot;       3
+##  5 &quot;bolivia&quot;        4
+##  6 &quot;brazil&quot;         5
+##  7 &quot;bulgaria&quot;       6
+##  8 &quot;canada&quot;         7
+##  9 &quot;chile&quot;          8
+## 10 &quot;china&quot;          9
+## # … with 61 more rows</code></pre>
+<p>Once you have the data set with country and id number, we can iterate with <em>map</em> function from <strong>purrr</strong> package.</p>
+<pre class="r"><code>resistance_data &lt;- country %&gt;% 
+  arrange(country_name) %&gt;% #arrange country in alphabetical order
+  mutate(resistance_data = map(id, country_function)) # iterate function over id
+
+# resistance data is in a list by each country
+resistance_data</code></pre>
+<pre><code>## # A tibble: 71 x 3
+##    country_name    id resistance_data    
+##    &lt;chr&gt;        &lt;dbl&gt; &lt;list&gt;             
+##  1 &quot;argentina&quot;     48 &lt;tibble [28 × 9]&gt;  
+##  2 &quot;australia&quot;      1 &lt;tibble [152 × 10]&gt;
+##  3 &quot;austria&quot;        2 &lt;tibble [4 × 9]&gt;   
+##  4 &quot;belgium &quot;       3 &lt;tibble [21 × 9]&gt;  
+##  5 &quot;bolivia&quot;        4 &lt;tibble [8 × 9]&gt;   
+##  6 &quot;brazil&quot;         5 &lt;tibble [54 × 9]&gt;  
+##  7 &quot;bulgaria&quot;       6 &lt;tibble [4 × 9]&gt;   
+##  8 &quot;canada&quot;         7 &lt;tibble [118 × 10]&gt;
+##  9 &quot;chile&quot;          8 &lt;tibble [19 × 9]&gt;  
+## 10 &quot;china&quot;          9 &lt;tibble [44 × 9]&gt;  
+## # … with 61 more rows</code></pre>
+<p>Finally, we use <em>unnest</em> function to unlist the resistance_data.</p>
+<pre class="r"><code>final_resistance_data &lt;- resistance_data %&gt;% 
+  unnest(resistance_data) %&gt;% # unlist resistance data
+  dplyr::select(-x) # removing column x</code></pre>
+</div>
+<div id="final-herbicide-weed-resistance-data" class="section level2">
+<h2>Final herbicide weed resistance data</h2>
+<p>The “final_resistance_data” contains the full resistance dataset of all 71 countries listed in Heap et al. (2021). There are many possibilities when working with this data. For example, you can filter it by your country, weeds and/or use visualization. Its up to you!</p>
+<iframe seamless src="final_resistance_data.html" width="100%" height="500">
+</iframe>
+<p>We would like to thank Heap at al. (2021) for providing this great herbicide resistance database and all of the weed scientist collaborators that submit data for reporting.</p>
+</div>
+<div id="citation" class="section level2">
+<h2>Citation</h2>
+<p>Heap, I. The International Survey of Herbicide Resistant Weeds. Online. Internet. Friday, March 5, 2021.</p>
+</div>

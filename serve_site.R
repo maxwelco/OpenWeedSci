@@ -2,19 +2,16 @@ blogdown::serve_site()
 
 
 
-
+<iframe seamless src="../final_resistance/index.html" width="100%" height="500"></iframe>
+  
 
 #install.packages("blogdown")
-blogdown::install_hugo(version = "0.69.0", force = TRUE)
 library(blogdown)
+blogdown::install_hugo(version = "0.81.0", force = TRUE)
+
 
 # is your version less than the minimum version?
 hugo_version() 
 # if yes, then do this
-update_hugo(force = TRUE)
+blogdown::install_hugo()
 
-new_site(theme = "themefisher/Academia-hugo", 
-         sample = TRUE, 
-         theme_example = TRUE, 
-         empty_dirs = TRUE,
-         to_yaml = TRUE)

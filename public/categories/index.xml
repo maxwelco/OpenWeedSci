@@ -6,10 +6,24 @@
     <description>Recent content in Categories on Welcome to Open Weed Science</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 20 Aug 2020 21:13:14 -0500</lastBuildDate>
+    <lastBuildDate>Thu, 04 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Web scraping</title>
+      <link>/categories/web-scraping/</link>
+      <pubDate>Thu, 04 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/web-scraping/</guid>
+      <description></description>
+    </item>
     
-	<atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
-    
+    <item>
+      <title>Text Analysis</title>
+      <link>/categories/text-analysis/</link>
+      <pubDate>Sat, 13 Feb 2021 20:09:14 -0500</pubDate>
+      
+      <guid>/categories/text-analysis/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Data Analysis</title>
@@ -26,15 +40,6 @@
       <pubDate>Wed, 18 Mar 2020 21:13:14 -0500</pubDate>
       
       <guid>/categories/bioinformatics/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Text Analysis</title>
-      <link>/categories/text-analysis/</link>
-      <pubDate>Tue, 25 Feb 2020 21:13:14 -0500</pubDate>
-      
-      <guid>/categories/text-analysis/</guid>
       <description></description>
     </item>
     

@@ -31,7 +31,7 @@
         
         
         
-        <span><a href="https://github.com/openweedsci/OpenWeedScience/edit/master/content/post/2019-12-20-anovabeta.Rmd">Edit this page &rarr;</a></span>
+        <span><a href="https://github.com/maxwelco/OpenWeedSci/edit/master/content/post/anova_beta/2019-12-20-anovabeta.Rmd">Edit this page &rarr;</a></span>
         
         
       
@@ -67,6 +67,7 @@
 
 <main>
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <div id="background" class="section level1">
@@ -216,7 +217,7 @@ library(lmerTest)</code></pre>
 <p><em>emmip</em> function</p>
 </blockquote>
 <pre class="r"><code>emmip(model, ~herbicide, type=&quot;response&quot;) </code></pre>
-<p><img src="/post/2019-12-20-anovabeta_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="/post/anova_beta/2019-12-20-anovabeta_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <p>This figure helps visualize waterhemp control given herbicide treatments. It is useful in treatments arranged in factorial design.</p>
 </div>
 <div id="estimated-marginal-means-least-squares-means" class="section level2">
@@ -270,8 +271,8 @@ lsmeans</code></pre>
 <blockquote>
 <p><em>plot</em> function</p>
 </blockquote>
-<pre class="r"><code>plot(lsmeans, ~ herbicide, comparisons=TRUE, type=&quot;response&quot;, alpha=0.05, adjust=&quot;none&quot;)</code></pre>
-<p><img src="/post/2019-12-20-anovabeta_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<pre class="r"><code>plot(lsmeans$emmeans, ~ herbicide, comparisons=TRUE, type=&quot;response&quot;, alpha=0.05, adjust=&quot;none&quot;)</code></pre>
+<p><img src="/post/anova_beta/2019-12-20-anovabeta_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <p>The black dot represents the mean waterhemp control whereas the purple represents the confidence intervals for each herbicide. Red arrows indicate the comparison across herbicide treatments, whereas if red arrows do not overlap, treatments are different. See contrasts from lsmeans for validation.</p>
 </div>
 </div>
@@ -286,9 +287,17 @@ lsmeans</code></pre>
 <blockquote>
 <p><em>CLD</em> function</p>
 </blockquote>
-<pre class="r"><code>cld &lt;-CLD(lsmeans, alpha=0.05, Letters=letters, adjust=&quot;none&quot;, reversed = TRUE)
-
+<pre><code>cld &lt;-CLD(lsmeans$emmeans, alpha=0.05, Letters=letters, adjust=&quot;none&quot;, reversed = TRUE)
 cld </code></pre>
+<div id="warning" class="section level2">
+<h2>Warning</h2>
+<pre class="toml"><code>&quot;The CLD function and methods are deprecated. Compact-letter displays (CLDs) encourage a misleading interpretation of significance testing by visually grouping means whose comparisons have P &gt; alpha as though they are equal. However, failing to prove two means are different does not prove that they are the same. In addition, CLDs make a hard distinction between P values nearly equal to alpha but on opposite sides.&quot;</code></pre>
+<ul>
+<li>Some people have told me about <em>CLD</em> not working anymore. A solution is to use the <em>cld</em> function of <strong>multcomp</strong> package.</li>
+</ul>
+<pre class="r"><code>library(multcomp)
+cld &lt;- cld(lsmeans$emmeans, alpha=0.05, Letters=letters, adjust=&quot;none&quot;, reversed = TRUE)
+cld</code></pre>
 <pre><code>##  herbicide response     SE df lower.CL upper.CL .group
 ##  A            0.979 0.0112  8    0.930    0.994  a    
 ##  B            0.940 0.0220  8    0.864    0.974  ab   
@@ -300,9 +309,6 @@ cld </code></pre>
 ## Intervals are back-transformed from the logit scale 
 ## Tests are performed on the log odds ratio scale 
 ## significance level used: alpha = 0.05</code></pre>
-<div id="warning" class="section level2">
-<h2>Warning</h2>
-<pre class="toml"><code>&quot;The CLD function and methods are deprecated. Compact-letter displays (CLDs) encourage a misleading interpretation of significance testing by visually grouping means whose comparisons have P &gt; alpha as though they are equal. However, failing to prove two means are different does not prove that they are the same. In addition, CLDs make a hard distinction between P values nearly equal to alpha but on opposite sides.&quot;</code></pre>
 </div>
 </div>
 <div id="figure" class="section level1">
@@ -323,8 +329,8 @@ geom_linerange(aes(ymin = lower.CL*100, ymax = upper.CL*100), size=1.5) +
 theme(axis.title = element_text(size=16),
 axis.text = element_text(size=15),
 legend.position = &quot;none&quot;) +
-coord_flip()</code></pre>
-<p><img src="/post/2019-12-20-anovabeta_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+coord_flip() </code></pre>
+<p><img src="/post/anova_beta/2019-12-20-anovabeta_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p>The mean and confidence intervals of each herbicide are displayed in the<em>ggplot</em> figure.</p>
 <blockquote>
 <p>Figure updated to follow a suggestion by <a href="https://twitter.com/WyoWeeds">Dr. Andrew Kniss</a> (see comments).</p>
@@ -341,7 +347,7 @@ coord_flip()</code></pre>
   theme(axis.title = element_text(size=16),
         axis.text = element_text(size=15),
         legend.position = &quot;none&quot;) </code></pre>
-<p><img src="/post/2019-12-20-anovabeta_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="/post/anova_beta/2019-12-20-anovabeta_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 </div>
 <div id="table" class="section level2">
 <h2>Table</h2>
@@ -518,7 +524,7 @@ E
 <section class="article-meta article-footer">
   <h3>About the Author</h3>
   
-    <p>Maxwel C Oliveira is currently a Professor of Weed Science/Data Analysis at <a href="https://www.unoeste.br">Western Sao Paulo University</a> and Researcher at <a href="https://www.wisc.edu">University of Wisconsin-Madison</a>. You can follow him on <a href="https://twitter.com/maxwelco">Twitter</a></p>
+    <p>Maxwel C Oliveira is an Associate Researcher at <a href="https://www.wisc.edu">University of Wisconsin-Madison</a>. You can follow him on <a href="https://twitter.com/maxwelco">Twitter</a>.</p>
   
     <p>Rodrigo Werle is currently an Assistant Professor of Weed Science at the University of Wisconsin-Madison. You can find more information about him at <a href="https://wiscweeds.info">https://wiscweeds.info</a>.</p>
   
@@ -569,7 +575,7 @@ s.setAttribute('data-timestamp', +new Date());
     
   </ul>
   
-  <div class="copyright">© <a href="https://openweedsci.org">Open Weed Science</a> 2020 | <a href="https://github.com/openweedsci">Github</a> | <a href="https://twitter.com/openweedsci">Twitter</a></div>
+  <div class="copyright">© <a href="https://openweedsci.org">Open Weed Science</a> 2020 | <a href="https://github.com/maxwelco/OpenWeedSci">Github</a> | <a href="https://twitter.com/openweedsci">Twitter</a></div>
   
 </div>
 </footer>

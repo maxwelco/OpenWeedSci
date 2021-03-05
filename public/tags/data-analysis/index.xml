@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>data analysis on Welcome to Open Weed Science</title>
+    <link>/tags/data-analysis/</link>
+    <description>Recent content in data analysis on Welcome to Open Weed Science</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 04 Mar 2021 00:00:00 +0000</lastBuildDate><atom:link href="/tags/data-analysis/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Web scraping herbicide resistant data</title>
+      <link>/post/2021/03/04/eea/</link>
+      <pubDate>Thu, 04 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/2021/03/04/eea/</guid>
+      <description>Web scraping Web scraping, web harvesting, or web data extraction is data scraping used for extracting data from websites. Web pages use HyperText Markup Language (HTML). HTML isn’t a programming language like R. However, it’s a markup language with its own syntax and rules. In addition, Cascading Style Sheets, or CSS, is a language for adding styles to HTML pages.
+This post will lead you to get an structured data of herbicide weed resistance by country from the http://weedscience.</description>
+    </item>
+    
+    <item>
+      <title>North Central Weed Science Society meeting proceedings, an overview of the XXI century using text analysis</title>
+      <link>/post/2021/02/13/north-central-weed-science-society-meeting-proceedings-an-overview-of-the-xxi-century-using-text-analysis/</link>
+      <pubDate>Sat, 13 Feb 2021 20:09:14 -0500</pubDate>
+      
+      <guid>/post/2021/02/13/north-central-weed-science-society-meeting-proceedings-an-overview-of-the-xxi-century-using-text-analysis/</guid>
+      <description>This text analysis is part of my poster (co-authored with Rodrigo Werle and Sarah Marinho) presented at the 2020 Virtual North Central Weed Science Society NCWSS annual meeting (December 2020). Here I am presenting part of that abstract focused on weed species ranked amongst the top 100 words from 2001 through 2020 (I am adding the 2020 meeting proceedings to this analysis). I am also running the text analysis with less coding than for the 2020 NCWSS meeting which is what I am going to show in this analysis.</description>
+    </item>
+    
+  </channel>
+</rss>

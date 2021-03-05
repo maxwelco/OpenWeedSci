@@ -31,7 +31,7 @@
         
         
         
-        <span><a href="https://github.com/openweedsci/OpenWeedScience/edit/master/content/post/2020-02-25-wssa.Rmd">Edit this page &rarr;</a></span>
+        <span><a href="https://github.com/maxwelco/OpenWeedSci/edit/master/content/post/wssa_text_analysis/2020-02-25-wssa.Rmd">Edit this page &rarr;</a></span>
         
         
       
@@ -67,6 +67,7 @@
 
 <main>
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <div id="conference" class="section level1">
@@ -159,12 +160,12 @@ for (i in 1:length(title)) {
   unnest_tokens(words, names)</code></pre>
 <p>Let’s run <em>title_tokens</em> to see how the data are organized. Please notice that each row contains a word or number.</p>
 <pre class="r"><code>head(title_tokens, n=5)</code></pre>
-<pre><code>##         words
-## 1     program
-## 2      monday
-## 2.1 afternoon
-## 2.2     march
-## 2.3         2</code></pre>
+<pre><code>##       words
+## 1   program
+## 2    monday
+## 3 afternoon
+## 4     march
+## 5         2</code></pre>
 </div>
 <div id="removing-authors-name" class="section level3">
 <h3>Removing authors’ name</h3>
@@ -192,13 +193,13 @@ authors_tokens &lt;- authorsdm %&gt;%
 <h3>New created vector</h3>
 <p>A new vector is named <em>titles_tokens_clean</em>.</p>
 <pre class="r"><code>head(titles_tokens_clean, n = 6)</code></pre>
-<pre><code>##         words
-## 1     program
-## 2.1 afternoon
-## 2.2     march
-## 3     general
-## 3.1   session
-## 4    location</code></pre>
+<pre><code>##       words
+## 1   program
+## 2 afternoon
+## 3     march
+## 4   general
+## 5   session
+## 6  location</code></pre>
 <p>A issue that we found is some authors have a number after their last names below the titles. For example Lindquist1, Yearka2, Tenhumberg1, Jhala1, and Werle3, numbers are given to identify their respective institutions.</p>
 <p><img src="/files/wssa/werle.png" /></p>
 <p>A solution for this problem is to create a data frame with authors’s last names with numbers from 1 to 12. To accomplish this task, we need the <em>loop</em> function again. This is the third <em>loop</em> in this text analysis; by the end of this exercise you will become an expert in using the <em>loop</em> function :)</p>
@@ -219,17 +220,17 @@ rm_authors$words &lt;- as.character(rm_authors$words)</code></pre>
 <p>Similarly, we run the <em>anti_join</em> funtion again to remove the last names with numbers for our main data frame, now named <em>titles_clean_clean</em>.</p>
 <pre class="r"><code>titles_clean_clean &lt;- anti_join(titles_tokens_clean, rm_authors, by = &quot;words&quot;)</code></pre>
 <pre class="r"><code>head(titles_clean_clean, n=10)</code></pre>
-<pre><code>##         words
-## 1     program
-## 2.1 afternoon
-## 2.2     march
-## 3     general
-## 3.1   session
-## 4    location
-## 4.1  monarchy
-## 5        time
-## 5.1        04
-## 5.2        00</code></pre>
+<pre><code>##        words
+## 1    program
+## 2  afternoon
+## 3      march
+## 4    general
+## 5    session
+## 6   location
+## 7   monarchy
+## 8       time
+## 9         04
+## 10        00</code></pre>
 </div>
 </div>
 <div id="stop-words" class="section level2">
@@ -359,7 +360,7 @@ title_dt &lt;- data.frame(word = names(title_v),freq=title_v)</code></pre>
   theme(axis.title = element_text(size=15),
         axis.text = element_text(size=13)) </code></pre>
 <div class="figure"><span id="fig:unnamed-chunk-24"></span>
-<img src="/post/2020-02-25-wssa_files/figure-html/unnamed-chunk-24-1.png" alt="Most frequent words (n=30+) that appeared in the WSSA/WSWS oral and poster presentation titles." width="672" />
+<img src="/post/wssa_text_analysis/2020-02-25-wssa_files/figure-html/unnamed-chunk-24-1.png" alt="Most frequent words (n=30+) that appeared in the WSSA/WSWS oral and poster presentation titles." width="672" />
 <p class="caption">
 Figure 1: Most frequent words (n=30+) that appeared in the WSSA/WSWS oral and poster presentation titles.
 </p>
@@ -386,7 +387,7 @@ Figure 1: Most frequent words (n=30+) that appeared in the WSSA/WSWS oral and po
 set.seed(1234)
 wordcloud(words = title_dt$word, freq = title_dt$freq, min.freq=2, scale=c(5,.1),
            random.order=FALSE, rot.per=0.35, colors=pal)</code></pre>
-<p><img src="/post/2020-02-25-wssa_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+<p><img src="/post/wssa_text_analysis/2020-02-25-wssa_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
 <p>The word cloud highlights how herbicides dominate the weed science discipline.</p>
 <p><strong>Challenge:</strong></p>
 <ol style="list-style-type: decimal">
@@ -430,7 +431,7 @@ wordcloud(words = title_dt$word, freq = title_dt$freq, min.freq=2, scale=c(5,.1)
 <section class="article-meta article-footer">
   <h3>About the Author</h3>
   
-    <p>Maxwel C Oliveira is currently a Professor of Weed Science/Data Analysis at <a href="https://www.unoeste.br">Western Sao Paulo University</a> and Researcher at <a href="https://www.wisc.edu">University of Wisconsin-Madison</a>. You can follow him on <a href="https://twitter.com/maxwelco">Twitter</a></p>
+    <p>Maxwel C Oliveira is an Associate Researcher at <a href="https://www.wisc.edu">University of Wisconsin-Madison</a>. You can follow him on <a href="https://twitter.com/maxwelco">Twitter</a>.</p>
   
     <p>Sarah M Matos Marinho is currently a Research Assistant at <a href="http://www.cepesp.io/en/">Fundação Getulio Vargas-CEPESP São Paulo</a>. You can find more information about her at <a href="http://lattes.cnpq.br/9817226069944290">http://lattes.cnpq.br/9817226069944290</a>.</p>
   
@@ -483,7 +484,7 @@ s.setAttribute('data-timestamp', +new Date());
     
   </ul>
   
-  <div class="copyright">© <a href="https://openweedsci.org">Open Weed Science</a> 2020 | <a href="https://github.com/openweedsci">Github</a> | <a href="https://twitter.com/openweedsci">Twitter</a></div>
+  <div class="copyright">© <a href="https://openweedsci.org">Open Weed Science</a> 2020 | <a href="https://github.com/maxwelco/OpenWeedSci">Github</a> | <a href="https://twitter.com/openweedsci">Twitter</a></div>
   
 </div>
 </footer>
