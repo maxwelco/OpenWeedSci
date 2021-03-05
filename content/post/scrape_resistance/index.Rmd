@@ -35,11 +35,8 @@ If you want to learn more details about web scraping in R, please read [here](ht
 
 It is not novel that herbicide resistance is a major problem worldwide. If you are a student, Professor, extension or industry personnel in the field of Weed Science, you  have probably landed in the **The International Herbicide-Resistant Weed Database** (<http://weedscience.org/Home.aspx>), which is leaded by Dr. Ian Heap. 
 
-<center>
-<iframe width='800px' height='400px' src='http://weedscience.org/Home.aspx' >
-  <p>Your browser does not support iframes</p>
-</iframe>
-</center>
+
+![](website.png)
 
 
 If you are a novice in Weed Science, here is the website description: 
@@ -64,15 +61,13 @@ library(tidyverse)
 
 ## Scraping herbicide resistance weeds by county and site of action
 
-Once you have loaded the package in R we will start retrieving the herbicide resistance weeds by county and site of action. The data we needed can be found in the link below (yellow table): 
+Once you have loaded the package in R we will start retrieving the herbicide resistance weeds by county and site of action. The data we needed can be found in the link (<http://weedscience.org/Summary/CountrySummary.aspx>), see below (yellow table): 
 
 <center>
-<iframe width='800px' height='400px' src='http://weedscience.org/Summary/CountrySummary.aspx'>
-  <p>Your browser does not support iframes</p>
-</iframe>
+![](resistance.png)
 </center>
 
-The above shows the web page with the data we need to retrieve from this page. If you scroll down you can see that there are a list of 71 countries with number of herbicide resistance, total and resistance by sites of action (SOA). Notice that SOA are represented by Herbicide Resistance Action Committee (HRAC) [nomenclature](https://hracglobal.com/files/HRAC_Revised_MOA_Classification_Herbicides_Poster.png).
+The figure above shows the web page with the data we need to retrieve. If you scroll down you can see that there are a list of 71 countries with number of herbicide resistance, total and resistance by sites of action (SOA). Notice that SOA are represented by Herbicide Resistance Action Committee (HRAC) [nomenclature](https://hracglobal.com/files/HRAC_Revised_MOA_Classification_Herbicides_Poster.png).
 
 
 Now we need to load the web page (http://weedscience.org/Summary/CountrySummary.aspx) in R. We will use the function *read_html*. Let's run the code below. Notice that "world_resistance" is the name I chose to assign the webpage information. 
@@ -133,9 +128,7 @@ The link below show an example of the data we are are interested. Notice the web
 
 
 <center>
-<iframe width='800px' height='400px' src='http://weedscience.org/Summary/Country.aspx?CountryID=45' >
-  <p>Your browser does not support iframes</p>
-</iframe>
+![](weed_resistance.png)
 </center>
 
 Knowing that we can extract all 71 countries' data at once. We will use a similar code snippet, as demonstrated earlier in this post. The difference is that we are using the codes inside a function (*country_function*) that takes the country id as an argument and pass into the function body. 

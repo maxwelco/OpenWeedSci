@@ -23,13 +23,7 @@ thumbnail: http://weedscience.org/Images/1.jpg
 <div id="herbicide-resistance" class="section level2">
 <h2>Herbicide resistance</h2>
 <p>It is not novel that herbicide resistance is a major problem worldwide. If you are a student, Professor, extension or industry personnel in the field of Weed Science, you have probably landed in the <strong>The International Herbicide-Resistant Weed Database</strong> (<a href="http://weedscience.org/Home.aspx" class="uri">http://weedscience.org/Home.aspx</a>), which is leaded by Dr. Ian Heap.</p>
-<center>
-<iframe width="800px" height="400px" src="http://weedscience.org/Home.aspx">
-<p>
-Your browser does not support iframes
-</p>
-</iframe>
-</center>
+<p><img src="website.png" /></p>
 <p>If you are a novice in Weed Science, here is the website description:</p>
 <blockquote>
 <p>The International Survey of Herbicide Resistant Weeds is a collaborative effort between weed scientists in over 80 countries. Our main aim is to maintain scientific accuracy in the reporting of herbicide resistant weeds globally. This collaborative effort is supported by government, academic, and industry weed scientists worldwide. This project is funded by the Global Herbicide Resistance Action Committee and CropLife International.</p>
@@ -46,15 +40,11 @@ library(tidyverse)</code></pre>
 </div>
 <div id="scraping-herbicide-resistance-weeds-by-county-and-site-of-action" class="section level2">
 <h2>Scraping herbicide resistance weeds by county and site of action</h2>
-<p>Once you have loaded the package in R we will start retrieving the herbicide resistance weeds by county and site of action. The data we needed can be found in the link below (yellow table):</p>
+<p>Once you have loaded the package in R we will start retrieving the herbicide resistance weeds by county and site of action. The data we needed can be found in the link (<a href="http://weedscience.org/Summary/CountrySummary.aspx" class="uri">http://weedscience.org/Summary/CountrySummary.aspx</a>), see below (yellow table):</p>
 <center>
-<iframe width="800px" height="400px" src="http://weedscience.org/Summary/CountrySummary.aspx">
-<p>
-Your browser does not support iframes
-</p>
-</iframe>
+<img src="resistance.png" />
 </center>
-<p>The above shows the web page with the data we need to retrieve from this page. If you scroll down you can see that there are a list of 71 countries with number of herbicide resistance, total and resistance by sites of action (SOA). Notice that SOA are represented by Herbicide Resistance Action Committee (HRAC) <a href="https://hracglobal.com/files/HRAC_Revised_MOA_Classification_Herbicides_Poster.png">nomenclature</a>.</p>
+<p>The figure above shows the web page with the data we need to retrieve. If you scroll down you can see that there are a list of 71 countries with number of herbicide resistance, total and resistance by sites of action (SOA). Notice that SOA are represented by Herbicide Resistance Action Committee (HRAC) <a href="https://hracglobal.com/files/HRAC_Revised_MOA_Classification_Herbicides_Poster.png">nomenclature</a>.</p>
 <p>Now we need to load the web page (<a href="http://weedscience.org/Summary/CountrySummary.aspx" class="uri">http://weedscience.org/Summary/CountrySummary.aspx</a>) in R. We will use the function <em>read_html</em>. Let’s run the code below. Notice that “world_resistance” is the name I chose to assign the webpage information.</p>
 <pre class="r"><code>world_resistance &lt;- read_html(&quot;http://weedscience.org/Summary/CountrySummary.aspx&quot;)</code></pre>
 <p>The webpage link is now stored in “world_resistance”. We will now use two functions, <em>html_node</em> and <em>html_table</em>, to extract only the Herbicide Resistance Weeds by County and Site of Action Table. The <em>html_node()</em> extract the <strong>selector</strong>, which is “table” for this webpage. Then I use <em>html_table()</em> to make the output as a table. Notice the operator <em>%&gt;%</em> is used to pass the result of one step as input for the next step.</p>
@@ -111,11 +101,7 @@ resistance_chart2</code></pre>
 <p>I clicked on United States to show the data that we are retrieving from the website but we will get that data from all 71 countries listed.</p>
 <p>The link below show an example of the data we are are interested. Notice the website link changed a bit when we click on United States: <a href="http://weedscience.org/Summary/Country.aspx?CountryID=45" class="uri">http://weedscience.org/Summary/Country.aspx?CountryID=45</a>. If you look closely, the only thing is changing is the last attribute of the link, ID. Each country has their own code ID. The United States ID is 45.</p>
 <center>
-<iframe width="800px" height="400px" src="http://weedscience.org/Summary/Country.aspx?CountryID=45">
-<p>
-Your browser does not support iframes
-</p>
-</iframe>
+<img src="weed_resistance.png" />
 </center>
 <p>Knowing that we can extract all 71 countries’ data at once. We will use a similar code snippet, as demonstrated earlier in this post. The difference is that we are using the codes inside a function (<em>country_function</em>) that takes the country id as an argument and pass into the function body.</p>
 <pre class="r"><code>country_function &lt;- function(id) {
