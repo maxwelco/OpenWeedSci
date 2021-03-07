@@ -1,8 +1,8 @@
 blogdown::serve_site() 
 
 
-
-<iframe seamless src="../final_resistance/index.html" width="100%" height="500"></iframe>
+<iframe seamless src="final_resistance_data.html" width="100%" height="500"></iframe>
+  
   
 
 #install.packages("blogdown")

@@ -25,8 +25,8 @@ Web scraping, web harvesting, or web data extraction is data scraping used for e
 
 ![](https://static.javatpoint.com/python/images/web-scraping-using-python.png)
 
-
-This post will lead you to get an structured data of herbicide weed resistance by country from the <http://weedscience.org/Home.aspx> website. We are not gonna teach you about the full details of web scraping. Rather we are using some of web scraping techniques in R to get herbicide resistance data. 
+ 
+This post will lead you to get a structured data of herbicide weed resistance by country from the <http://weedscience.org/Home.aspx> website. We are not gonna teach you about the full details of web scraping. Rather we are using some of web scraping techniques in R to get herbicide resistance data. 
 
 If you want to learn more details about web scraping in R, please read [here](https://www.dataquest.io/blog/web-scraping-in-r-rvest/)
 
