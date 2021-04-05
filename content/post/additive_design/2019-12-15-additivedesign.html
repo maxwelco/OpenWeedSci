@@ -61,9 +61,20 @@ install.packages(&quot;RCurl&quot;)
 library(RCurl)</code></pre>
 <p>The data used for the exercise is from a published <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/wre.12317">manuscript</a> of <em>Commelina benghalensis</em> and <em>Richardia brasiliensis</em> competition in corn.</p>
 <p>Run the following codes below to load the data into R:</p>
-<pre class="r"><code>df_path &lt;- getURL(&quot;https://raw.githubusercontent.com/openweedsci/data/master/posts/additive.csv&quot;)
+<pre class="r"><code>df_path &lt;- url(&quot;https://raw.githubusercontent.com/openweedsci/data/master/posts/additive.csv&quot;)
 
 DMT &lt;- read_csv(df_path) </code></pre>
+<pre><code>## 
+## ── Column specification ────────────────────────────────────────────────────────
+## cols(
+##   block = col_double(),
+##   treat = col_double(),
+##   densitycrop = col_double(),
+##   densityweed = col_double(),
+##   biomass = col_double(),
+##   yl = col_double(),
+##   weed = col_double()
+## )</code></pre>
 <p>After running the codes above, the data should appear as <em>DMT</em> (“DMT” was chosen as the name of the dataset; you could have called it “data” or something else). In the spreadsheet, weeds are named 1 (<em>C. benghalensis</em>) and 2 (<em>R. brasiliensis</em>), and desity of weeds varies from 0 to 4 plants per plot, and response variable is yl (% yield loss).</p>
 <pre class="r"><code>DMT</code></pre>
 <pre><code>## # A tibble: 40 x 7

@@ -42,7 +42,7 @@ paginate = 6
     description = "A website built through Hugo and blogdown."
     summary_length = 300
     github_edit = "https://github.com/maxwelco/OpenWeedSci/edit/master/content/"
-    footer = "&copy; [Open Weed Science](https://openweedsci.org) 2020 | [Github](https://github.com/maxwelco/OpenWeedSci) | [Twitter](https://twitter.com/openweedsci)"
+    footer = "&copy; [Open Weed Science](https://openweedsci.org) 2021 | [Github](https://github.com/maxwelco/OpenWeedSci) | [Twitter](https://twitter.com/openweedsci)"
 
 [params.text]
     back = "&larr; Back to Home"

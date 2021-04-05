@@ -64,7 +64,7 @@ install.packages(kableExtra)</code></pre>
 <pre class="yaml"><code>library(tidyverse)
 library(RCurl)</code></pre>
 <p>The data used for this exercise is from a published <a href="https://www.doi.org/10.1017/wet.2016.4">manuscript</a> by Oliveira et al. 2017 investigating control of a waterhemp (<em>Amaranthus tuberculatus</em>) population with several with several postemergence herbicides. For this exercise, herbicides are named A, B, C, D, and E. In addition, only results from year 2014 is presented. Run the following codes to load the data into R:</p>
-<pre class="r"><code>df_path &lt;- getURL(&quot;https://raw.githubusercontent.com/openweedsci/data/master/posts/control.csv&quot;)
+<pre class="r"><code>df_path &lt;- url(&quot;https://raw.githubusercontent.com/openweedsci/data/master/posts/control.csv&quot;)
 
 weedcont &lt;- read_csv(df_path)</code></pre>
 <p>After running the codes above, the data should appear as <em>weedcont</em> (“control” was chosen as the name of the dataset; you could have called it “data” or something else).</p>

@@ -80,7 +80,7 @@ Run the following codes below to load the data into R:
 
 
 ```{r}
-df_path <- getURL("https://raw.githubusercontent.com/openweedsci/data/master/posts/additive.csv")
+df_path <- url("https://raw.githubusercontent.com/openweedsci/data/master/posts/additive.csv")
 
 DMT <- read_csv(df_path) 
 ```

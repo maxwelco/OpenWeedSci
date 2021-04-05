@@ -93,7 +93,7 @@ The data used for this exercise is from a published [manuscript](https://www.doi
 
 
 ```{r}
-df_path <- getURL("https://raw.githubusercontent.com/openweedsci/data/master/posts/control.csv")
+df_path <- url("https://raw.githubusercontent.com/openweedsci/data/master/posts/control.csv")
 
 weedcont <- read_csv(df_path)
 ```
