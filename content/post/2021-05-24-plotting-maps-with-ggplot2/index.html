@@ -1,0 +1,144 @@
+---
+title: Plotting maps with ggplot2
+author: José J Nunes
+date: '2021-05-24'
+slug: plotting-maps-with-ggplot2
+categories:
+  - Visualization
+tags:
+  - Markdown
+thumbnail: https://www.nationsonline.org/maps/USA/Wisconsin-location-map.jpg
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+
+<p>Data visualization is just awesome! And it’s incredible how versatile the package <code>ggplot2</code> is. To show you that, we’re going to build a map of Wisconsin containing a gradient of colors indicating the area planted with corn in the state at a county level. To do so, we’ll be using the package ‘tidyverse’ for plotting and data manipulation. And the packages <code>ggspatial</code>, <code>ggthemes</code>, and <code>ggtext</code> for customizing our map.</p>
+<pre class="r"><code>library(tidyverse) #ggplot2 for plotting and dplyr for data manipulation
+library(ggspatial) #map features
+library(ggthemes)  #map features
+library(ggtext)    #map features</code></pre>
+<p>As our first step, we need Wisconsin geographic coordinates (latitude and longitude) that will work as our base map. One easy way to get this information is using the <code>ggplot2</code> package. That’s right. You heard me <code>ggplot2</code>! <code>ggplot2</code> is not only for plotting graphics but also maps and other cool stuff. In this case, <code>ggplot2</code> carries the ‘map_data’ function, which loads geographical data from the <code>maps</code> package.</p>
+<p>To get the state of Wisconsin data, we just need two lines of code. On the first line, we specify the division of our data in the ‘map_data’ function. When we use ‘county’, the output will be Wisconsin with all its counties coordinates. And if we use ‘state’, it will be only the state geographical data, which would result in a blank map. On the second line, we filter the state we’d like to work with, in this case, Wisconsin. But, you can choose your own state. If we don’t filter by state, the output will be the United States data.</p>
+<pre class="r"><code>wisconsin &lt;- map_data(&quot;county&quot;) %&gt;% #to specify the division of the data
+  filter(region == &quot;wisconsin&quot;)     #to filter by state</code></pre>
+<p>Let’s take a look at what kind of data we got. As you can see, we have everything we need for our map. We have longitude (long) and latitude (lat) for all Wisconsin counties (subregion) and also each county group.</p>
+<pre class="r"><code>library(DT)
+wisconsin %&gt;% 
+  datatable()</code></pre>
+<iframe seamless src="wisconsin.html" width="100%" height="500">
+</iframe>
+<p>The data are looking good, but the subregion column is not intuitive. So, let’s change its name to county using the ‘rename’ function from ‘dplyr’.</p>
+<pre class="r"><code>wisconsin &lt;- map_data(&quot;county&quot;) %&gt;% #to specify the division of the data
+  filter(region == &quot;wisconsin&quot;) %&gt;% #to filter by state
+  rename(&quot;County&quot; = &quot;subregion&quot;)    # to rename subregion to county</code></pre>
+<p>Now, that’s much better!</p>
+<pre class="r"><code>wisconsin %&gt;% 
+  datatable()</code></pre>
+<iframe seamless src="wisconsin.html" width="100%" height="500">
+</iframe>
+<p>As our first example, let’s create a basic map of the state using the ‘wisconsin’ data set with <code>ggplot2</code>. The structure of a map in <code>ggplot2</code> is the same as any other plot. We need a data frame, the aesthetics, and a geom.</p>
+<p><img src="map1.png" /></p>
+<p>Now that we have our base map figured out, we have to add some data into it. We’re going to use the data from the <a href="https://quickstats.nass.usda.gov/">USDA/NASS Quick Stats website</a>. There you can choose the kind of data you’d like to use and download the spreadsheet. For our example, we filtered the area planted with corn in Wisconsin at a county level in 2020. Another way of downloading the USDA/NASS data is using the <a href="https://github.com/bradlindblad/tidyUSDA/"><code>tidyUSDA</code> package</a>. However, since there are some pretty specific instructions to use the package, we’ll leave that for another time and use our csv spreadsheet.</p>
+<pre class="r"><code>url &lt;- &quot;https://raw.githubusercontent.com/JoseJNunes/Wisconsin_Map/main/corn_data.csv&quot;
+usda_corn &lt;- read_csv(url)</code></pre>
+<p>As seen below, there’s a lot of information in our data set. But don’t worry, we’re only going to need the columns ‘County’ and ‘Value’. Here ‘Value’ is the area in acres planted with corn in each county.</p>
+<iframe seamless src="usda_corn.html" width="100%" height="500">
+</iframe>
+<p>To select the columns that we’ll need, we use the ‘select’ function from <code>dplyr</code>. Once we have our two columns, we should adjust some details in them. The first one is to rename ‘Value’ to ‘area’ to be more intuitive. The second one is to change the county names from upper to lowercase using the ‘mutate_all’ function to match the ‘wisconsin’ data frame that have the county names in lowercase. Now, all we have to do is join the two data frames using the ‘left_join’ function also from <code>dplyr</code>, by ‘County’.</p>
+<pre class="r"><code>corn_data &lt;- usda_corn %&gt;% 
+  select(&quot;County&quot;, &quot;Value&quot;) %&gt;%       #to select the columns that we need
+  rename(&quot;area&quot; = &quot;Value&quot;) %&gt;%        #to rename the Value column to area
+  mutate_all(list (tolower)) %&gt;%      #to change from UPPER to lowercase the county names
+  left_join(wisconsin, by = &quot;County&quot;) #to join both data frames using County as a reference</code></pre>
+<p>Now we have a single data frame (‘corn_data’) with the geographical information of the state of Wisconsin and the area planted with corn in 64 of its counties.</p>
+<pre class="r"><code>corn_data</code></pre>
+<pre><code>## # A tibble: 1,089 x 7
+##    County area   long   lat group order region   
+##    &lt;chr&gt;  &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;chr&gt;    
+##  1 adams  27500 -89.8  43.6  2988 88960 wisconsin
+##  2 adams  27500 -89.8  43.7  2988 88961 wisconsin
+##  3 adams  27500 -89.8  43.7  2988 88962 wisconsin
+##  4 adams  27500 -89.8  43.7  2988 88963 wisconsin
+##  5 adams  27500 -89.8  43.7  2988 88964 wisconsin
+##  6 adams  27500 -89.8  43.8  2988 88965 wisconsin
+##  7 adams  27500 -89.8  43.8  2988 88966 wisconsin
+##  8 adams  27500 -89.9  43.8  2988 88967 wisconsin
+##  9 adams  27500 -89.9  43.8  2988 88968 wisconsin
+## 10 adams  27500 -89.9  43.9  2988 88969 wisconsin
+## # … with 1,079 more rows</code></pre>
+<p>Before we dive into our final map, let’s make the last adjustment to our data frame. If we look at the structure of our variables, we can see that ‘area’ is treated as a character. However, for our map to work, we need it as numeric data.</p>
+<pre class="r"><code>str(corn_data)</code></pre>
+<pre><code>## tibble [1,089 × 7] (S3: tbl_df/tbl/data.frame)
+##  $ County: chr [1:1089] &quot;adams&quot; &quot;adams&quot; &quot;adams&quot; &quot;adams&quot; ...
+##  $ area  : chr [1:1089] &quot;27500&quot; &quot;27500&quot; &quot;27500&quot; &quot;27500&quot; ...
+##  $ long  : num [1:1089] -89.8 -89.8 -89.8 -89.8 -89.8 ...
+##  $ lat   : num [1:1089] 43.6 43.7 43.7 43.7 43.7 ...
+##  $ group : num [1:1089] 2988 2988 2988 2988 2988 ...
+##  $ order : int [1:1089] 88960 88961 88962 88963 88964 88965 88966 88967 88968 88969 ...
+##  $ region: chr [1:1089] &quot;wisconsin&quot; &quot;wisconsin&quot; &quot;wisconsin&quot; &quot;wisconsin&quot; ...</code></pre>
+<pre class="r"><code>corn_data$area &lt;- as.numeric(corn_data$area)
+str(corn_data)</code></pre>
+<pre><code>## tibble [1,089 × 7] (S3: tbl_df/tbl/data.frame)
+##  $ County: chr [1:1089] &quot;adams&quot; &quot;adams&quot; &quot;adams&quot; &quot;adams&quot; ...
+##  $ area  : num [1:1089] 27500 27500 27500 27500 27500 27500 27500 27500 27500 27500 ...
+##  $ long  : num [1:1089] -89.8 -89.8 -89.8 -89.8 -89.8 ...
+##  $ lat   : num [1:1089] 43.6 43.7 43.7 43.7 43.7 ...
+##  $ group : num [1:1089] 2988 2988 2988 2988 2988 ...
+##  $ order : int [1:1089] 88960 88961 88962 88963 88964 88965 88966 88967 88968 88969 ...
+##  $ region: chr [1:1089] &quot;wisconsin&quot; &quot;wisconsin&quot; &quot;wisconsin&quot; &quot;wisconsin&quot; ...</code></pre>
+<p>Now we’re good to go!</p>
+<p>The final step is to build the map. We’ll use our first map example as our base. But, now we’ll add another ‘geom_polygon’ to it with the data that we just created by joining the ‘wisconsin’ and ‘usda_corn’ data. The trick behind the other ‘geom_polygon’ with the ‘corn_data’ is to add ‘fill = area’ inside the aesthetics. When we set it that way, ‘ggplot2’ understands you want something more of it and doesn’t just fill with a single color. Instead, it uses the area value from each county to create a gradient of colors that goes from the smallest to the largest area planted with corn in the state.</p>
+<p><img src="map2.png" /></p>
+<p>And there you have it! A map of Wisconsin with a gradient of colors indicating the number of acres planted with corn in the state in 2020. But, let’s make it prettier. Like change its colors, add titles, add a north star arrow, and the location of the beautiful capital Madison to the map.</p>
+<pre class="r"><code>#to add Madison&#39;s location in the map
+madison &lt;- data.frame(location = c(&quot;Madison&quot;), long = c(-89.38), lat = c(43.07)) 
+
+map_wi &lt;- ggplot(data = wisconsin, 
+       mapping = aes(x = long, 
+                     y = lat, 
+                     group = group)) + 
+  geom_polygon(color = &quot;black&quot;, 
+               fill = &quot;gray95&quot;) +
+  coord_fixed(1.3) +
+  geom_polygon(data = corn_data, 
+               aes(fill = area), 
+               color = &quot;black&quot;) +
+  geom_point(data = madison, 
+             aes(x = long,
+                 y = lat), #point with Madison&#39;s location
+             alpha = 0, 
+             show.legend = F, 
+             inherit.aes = F, 
+             color = &quot;black&quot;) +
+  scale_fill_gradient(low=&#39;yellow&#39;, high=&#39;red&#39;) + #to scale the colors between yellow and red
+  ggthemes::theme_few(base_size = 10) + #the theme and the base size of the font
+  labs(x = &quot;Longitude&quot;, y = &quot;Latitude&quot;) + #to add the x and y labels
+  labs(title = &quot;Corn in Wisconsin&quot;,          #title of the map
+       subtitle = &quot;Acres planted in 2020&quot;,   #subtitle of the map
+       caption = &quot;**Source:** *USDA/NASS* | Image: José J Nunes&quot;) + #caption of the map
+  theme(panel.grid.major = element_line(color = &quot;gray60&quot;,    # color of the coordinates lines
+                                        linetype = &quot;dashed&quot;, #type of the coordinates lines
+                                        size = 0.25),        #size of the coordinates lines
+        plot.title = element_markdown(face = &quot;bold&quot;, hjust = 0), #to edit the title
+        plot.subtitle = element_markdown(size = 8),              #to edit the subtitle
+        plot.caption = element_markdown()) +                      #to edit the caption
+  geom_text(data = madison, aes(x = long, y = lat, label = Madison), #to add the star in the map
+            label=&quot;★&quot;, size=4, family = &quot;HiraKakuPro-W3&quot;,
+            inherit.aes = F) +
+  geom_text(data = madison,aes(x = long, y = lat, label = Madison), #to add &quot;Madison&quot; in the map
+            label=&quot;Madison&quot;, size = 2, 
+            inherit.aes = F,
+            vjust = -1.5) +
+  labs(fill = &quot;Acres&quot;)+                                #label of the scale
+  guides(fill = guide_colorsteps(show.limits = F))+    #to edit the scale
+  ggspatial::annotation_north_arrow(style = north_arrow_nautical)  +#to add the north star arrow
+  ggsave(&quot;map_wi.png&quot;, width = 8, height = 7)</code></pre>
+<p><img src="map_wi.png" /></p>
+<p>And that’s our final map! As we can see, a significant part of the corn was planted in the southern part of the state. And Dane County had the largest number of acres in 2020.</p>
+<p>If you’d like to learn more about <code>ggplot2</code> and maps, there are lots of cool information out there. I’ll leave some listed below:</p>
+<ul>
+<li><a href="https://ggplot2.tidyverse.org/" class="uri">https://ggplot2.tidyverse.org/</a></li>
+<li><a href="https://ggplot2-book.org/maps.html" class="uri">https://ggplot2-book.org/maps.html</a></li>
+</ul>
+<p>And of course, if you have any questions don’t hesitate to contact us. Thank you!</p>
