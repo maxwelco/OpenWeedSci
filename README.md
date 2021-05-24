@@ -2,7 +2,9 @@
 Open Weed Science website - https://www.openweedsci.org/
 
 
+## Plotting maps with ggplot2
 
-<iframe width='1000px' height='1000px' src='https://www.openweedsci.org/' >
-  <p>Your browser does not support iframes</p>
-</iframe>
+
+![](/content/post/2021-05-24-plotting-maps-with-ggplot2/map_wi.png
+
+
