@@ -89,6 +89,15 @@ str(corn_data)</code></pre>
 ##  $ region: chr [1:1089] &quot;wisconsin&quot; &quot;wisconsin&quot; &quot;wisconsin&quot; &quot;wisconsin&quot; ...</code></pre>
 <p>Now we’re good to go!</p>
 <p>The final step is to build the map. We’ll use our first map example as our base. But, now we’ll add another ‘geom_polygon’ to it with the data that we just created by joining the ‘wisconsin’ and ‘usda_corn’ data. The trick behind the other ‘geom_polygon’ with the ‘corn_data’ is to add ‘fill = area’ inside the aesthetics. When we set it that way, ‘ggplot2’ understands you want something more of it and doesn’t just fill with a single color. Instead, it uses the area value from each county to create a gradient of colors that goes from the smallest to the largest area planted with corn in the state.</p>
+<pre class="r"><code>map1 &lt;- ggplot(data = wisconsin, 
+       mapping = aes(x = long, 
+                     y = lat, 
+                     group = group)) + 
+  geom_polygon(color = &quot;black&quot;, fill = &quot;gray95&quot;) +
+  coord_fixed(1.3) +
+  geom_polygon(data = corn_data, #the data that we joined
+               aes(fill = area), #we use &#39;fill = area&#39; inside the aes to get the different colors
+               color = &quot;black&quot;) </code></pre>
 <p><img src="map2.png" /></p>
 <p>And there you have it! A map of Wisconsin with a gradient of colors indicating the number of acres planted with corn in the state in 2020. But, let’s make it prettier. Like change its colors, add titles, add a north star arrow, and the location of the beautiful capital Madison to the map.</p>
 <pre class="r"><code>#to add Madison&#39;s location in the map

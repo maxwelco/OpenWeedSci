@@ -158,7 +158,7 @@ Now we're good to go!
 The final step is to build the map. We'll use our first map example as our base. But, now we'll add another 'geom_polygon' to it with the data that we just created by joining the 'wisconsin' and 'usda_corn' data. The trick behind the other 'geom_polygon' with the 'corn_data' is to add 'fill = area' inside the aesthetics. When we set it that way, 'ggplot2' understands you want something more of it and doesn't just fill with a single color. Instead, it uses the area value from each county to create a gradient of colors that goes from the smallest to the largest area planted with corn in the state. 
 
  
-```{r include=FALSE}
+```{r}
 map1 <- ggplot(data = wisconsin, 
        mapping = aes(x = long, 
                      y = lat, 
