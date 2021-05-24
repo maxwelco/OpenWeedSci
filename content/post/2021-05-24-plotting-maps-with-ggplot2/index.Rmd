@@ -83,7 +83,7 @@ wisconsin %>%
 As our first example, let's create a basic map of the state using the 'wisconsin' data set with `ggplot2`. The structure of a map in `ggplot2` is the same as any other plot. We need a data frame, the aesthetics, and a geom.
 
 
-```{r fig.align='center', include=FALSE}
+```{r}
 #something wrong - not showing output
 map0 <- ggplot(data = wisconsin,       #our data frame 
        mapping = aes(x = long, #longitude

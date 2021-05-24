@@ -38,6 +38,13 @@ wisconsin %&gt;%
 <iframe seamless src="wisconsin.html" width="100%" height="500">
 </iframe>
 <p>As our first example, let’s create a basic map of the state using the ‘wisconsin’ data set with <code>ggplot2</code>. The structure of a map in <code>ggplot2</code> is the same as any other plot. We need a data frame, the aesthetics, and a geom.</p>
+<pre class="r"><code>#something wrong - not showing output
+map0 &lt;- ggplot(data = wisconsin,       #our data frame 
+       mapping = aes(x = long, #longitude
+                     y = lat,  #latitude
+                     group = group)) + #the groups within a county
+  geom_polygon(color=&quot;black&quot;, fill=&quot;white&quot;) + #geom that draws the map
+  coord_fixed(1.3) #to keep a fixed ratio between coordinates so the map don&#39;t get twisted </code></pre>
 <p><img src="map1.png" /></p>
 <p>Now that we have our base map figured out, we have to add some data into it. We’re going to use the data from the <a href="https://quickstats.nass.usda.gov/">USDA/NASS Quick Stats website</a>. There you can choose the kind of data you’d like to use and download the spreadsheet. For our example, we filtered the area planted with corn in Wisconsin at a county level in 2020. Another way of downloading the USDA/NASS data is using the <a href="https://github.com/bradlindblad/tidyUSDA/"><code>tidyUSDA</code> package</a>. However, since there are some pretty specific instructions to use the package, we’ll leave that for another time and use our csv spreadsheet.</p>
 <pre class="r"><code>url &lt;- &quot;https://raw.githubusercontent.com/JoseJNunes/Wisconsin_Map/main/corn_data.csv&quot;
