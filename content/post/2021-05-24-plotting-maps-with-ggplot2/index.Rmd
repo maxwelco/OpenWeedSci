@@ -84,7 +84,6 @@ As our first example, let's create a basic map of the state using the 'wisconsin
 
 
 ```{r}
-#something wrong - not showing output
 map0 <- ggplot(data = wisconsin,       #our data frame 
        mapping = aes(x = long, #longitude
                      y = lat,  #latitude

@@ -38,8 +38,7 @@ wisconsin %&gt;%
 <iframe seamless src="wisconsin.html" width="100%" height="500">
 </iframe>
 <p>As our first example, let’s create a basic map of the state using the ‘wisconsin’ data set with <code>ggplot2</code>. The structure of a map in <code>ggplot2</code> is the same as any other plot. We need a data frame, the aesthetics, and a geom.</p>
-<pre class="r"><code>#something wrong - not showing output
-map0 &lt;- ggplot(data = wisconsin,       #our data frame 
+<pre class="r"><code>map0 &lt;- ggplot(data = wisconsin,       #our data frame 
        mapping = aes(x = long, #longitude
                      y = lat,  #latitude
                      group = group)) + #the groups within a county
