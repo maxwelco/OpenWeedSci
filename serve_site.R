@@ -1,8 +1,7 @@
 blogdown::serve_site() 
 
 
-<iframe seamless src="final_resistance_data.html" width="100%" height="500"></iframe>
-  
+
   
 
 #install.packages("blogdown")
@@ -14,4 +13,9 @@ blogdown::install_hugo(version = "0.81.0", force = TRUE)
 hugo_version() 
 # if yes, then do this
 blogdown::install_hugo()
+
+# License
+
+library(usethis)
+use_mit_license("Open Weed Science")
 
