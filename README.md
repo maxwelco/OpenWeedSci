@@ -1,5 +1,7 @@
 [![Netlify Status](https://api.netlify.com/api/v1/badges/04a48109-33b4-4032-b430-651bbcffd608/deploy-status)](https://app.netlify.com/sites/laughing-fermat-767fb4/deploys)
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5079863.svg)](http://doi.org/10.5281/zenodo.5079863)
+
 
 # OpenWeedSci
 Open Weed Science website - https://www.openweedsci.org/
